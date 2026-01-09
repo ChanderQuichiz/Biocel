@@ -1,0 +1,98 @@
+BIOCEL ECOMMERCE – DOCUMENTACIÓN PROFESIONAL
+1. ANTECEDENTES
+
+Biocel es una microempresa peruana ubicada en Lima, distrito de Miraflores, dedicada a la venta de dispositivos móviles.
+
+Debido a sus bajas ventas, la empresa ha decidido desarrollar una aplicación web en línea para mejorar sus ventas y optimizar la gestión de pedidos.
+
+2. PROCESO DE VENTAS PARA EL CLIENTE
+
+El flujo de ventas será el siguiente:
+
+Búsqueda y selección de productos
+
+El cliente ingresa al sitio y busca su dispositivo favorito.
+
+Revisa sus especificaciones: marca, categoría, precio, stock disponible, etc..
+
+Si el producto está disponible y le interesa, lo agrega al carrito de compras.
+
+Registro o inicio de sesión
+
+Antes de finalizar la compra, el cliente debe iniciar sesión.
+
+Si no tiene cuenta, deberá registrarse.
+
+Selección de entrega y pago
+
+Elegir entre recoger en tienda o delivery.
+
+Si es delivery, ingresar dirección de envío válida.
+
+Seleccionar método de pago y fecha de entrega.
+
+Validación y confirmación
+
+El sistema valida:
+
+Disponibilidad de stock.
+
+Datos de pago.
+
+Dirección de envío.
+
+Si todo es correcto, el pedido se confirma como transacción única, garantizando que todos los pasos se completen o ninguno (rollback en caso de error).
+
+Seguimiento del pedido
+
+El cliente puede consultar el estado del pedido, que puede ser:
+
+pendiente
+
+en preparación
+
+en reparto
+
+entregado
+
+pospuesto
+
+Si el cliente no se encuentra en el domicilio, se aplica un cargo extra y se permite reprogramar la entrega.
+
+3. PROCESO INTERNO DEL NEGOCIO
+
+Gestión de pedidos
+
+Los pedidos confirmados quedan en estado pendiente hasta que se procesa.
+
+Se asigna un repartidor disponible automáticamente.
+
+El repartidor actualiza el estado de entrega conforme avanza.
+
+Control de stock
+
+Al confirmarse un pedido, el stock del producto se actualiza automáticamente.
+
+Si la transacción falla, el stock se restablece.
+
+Reportes y análisis
+
+La empresa genera reportes periódicos que incluyen:
+
+Productos más vendidos.
+
+Rentabilidad de los productos.
+
+Fechas con mayor venta.
+
+Historial de pagos y entregas.
+
+Cualquier otra información útil para la toma de decisiones.
+
+Roles y permisos
+
+Cliente: solo puede ver sus pedidos y realizar compras.
+
+Repartidor: solo ve pedidos asignados y actualiza estado de entrega.
+
+Administrador: puede gestionar productos, stock, pedidos, pagos, usuarios y generar reportes.
