@@ -5,7 +5,7 @@ import { SearchInput } from './SearchInput'
 
 const navigation = [
   { name: 'Home', href: '/', current: true },
-  { name: 'Account', href: '/account/signin', current: false },
+  { name: 'Account', href: '/account/userinfo', current: false },
   { name: 'Checkout', href: '/checkout', current: false },
   { name: 'Dashboard', href: '/dashboard', current: false },
 ]

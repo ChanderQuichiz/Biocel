@@ -14,15 +14,49 @@ import {
   FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { Link } from "react-router-dom"
-
+import { Link, useNavigate } from "react-router-dom"
+import { useState } from "react"
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  type signin = {
+    email: string
+    password: string
+  }
+  const navegate = useNavigate()
+const [signinForm, setSigninForm] = useState<signin>({
+    email: "",
+    password: "",
+  });
 
-
+  function writerSigninForm(event: React.ChangeEvent<HTMLInputElement>) {
+    setSigninForm({
+      ...signinForm,
+      [event.target.id]: event.target.value,
+    })
+  }
+  async function sendForm() {
+    const emptyFields = Object.entries(signinForm).filter(([, value]) => !value);
+    if (emptyFields.length > 0) {
+      alert("Please fill in all fields.");
+      return;
+      }
+      const response = await fetch(`http://localhost:8020/user/access`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(signinForm)
+      });
+   if(response.ok){
+    const data = await response.json();
+    localStorage.setItem("account", JSON.stringify(data));
+    navegate("/account/userinfo")
+  }
+    else alert("Login failed. Please check your credentials.")
+    }
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
@@ -33,7 +67,7 @@ export function LoginForm({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <div>
             <FieldGroup>
               <Field>
                 <FieldLabel htmlFor="email">Email</FieldLabel>
@@ -42,6 +76,8 @@ export function LoginForm({
                   type="email"
                   placeholder="m@example.com"
                   required
+                  onChange={writerSigninForm}
+                  value={signinForm.email}
                 />
               </Field>
               <Field>
@@ -54,10 +90,10 @@ export function LoginForm({
                     Forgot your password?
                   </a>
                 </div>
-                <Input id="password" type="password" required />
+                <Input id="password" type="password" required value={signinForm.password} onChange={writerSigninForm} />
               </Field>
               <Field>
-                <Button type="submit">Login</Button>
+                <Button type="button" onClick={sendForm} className="cursor-pointer">Login</Button>
                 <Button variant="outline" type="button">
                   Login with Google
                 </Button>
@@ -66,7 +102,7 @@ export function LoginForm({
                 </FieldDescription>
               </Field>
             </FieldGroup>
-          </form>
+          </div>
         </CardContent>
       </Card>
     </div>

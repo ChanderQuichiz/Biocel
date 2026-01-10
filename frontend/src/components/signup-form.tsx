@@ -48,7 +48,6 @@ const [formSignup, setFormSignup] = useState<signup>({
       ...formSignup,
       confirmPassword: undefined
     })
-    console.log(formSignup)
     const response = await fetch('http://localhost:8020/user/save', {
       method: 'POST',
       headers: {

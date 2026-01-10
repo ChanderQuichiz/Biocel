@@ -18,20 +18,93 @@ import {
 } from "@/components/ui/select"
 import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog"
 import { Textarea } from "@headlessui/react"
-import { Switch } from "./ui/switch"
+import { useState } from "react"
+import type { Product } from "@/types/product"
 export function ProductDialog(){
-   /* productId: string;
-    productName: string;
-    brand: brand;
-    category: category;
-    description: string;
-    price: number;
-    stock: number;
-    status: "active" | "inactive";
-    image: string; */
-    return(
+   const brands = [
+    "Apple",
+    "Samsung",
+    "Microsoft",
+    "Google",
+    "Huawei",
+    "Xiaomi",
+    "Lenovo",
+    "Dell",
+    "HP",
+    "Asus",
+    "Acer",
+    "Sony",
+    "LG",
+    "Intel",
+    "AMD",
+    "NVIDIA",
+    "Qualcomm",
+    "IBM",
+    "Cisco",
+    "Oracle"
+  ]
+  const categories = [
+    "Smartphones",
+    "Laptops",
+    "Tablets",
+    "Monitors",
+    "Televisions",
+    "Wearables",
+    "Headphones",
+    "Speakers",
+    "Printers",
+    "Networking",
+    "Components",
+    "Processors",
+    "Graphics Cards",
+    "Storage",
+    "Peripherals",
+    "Servers",
+    "Software",
+    "Cloud Services",
+    "Smart Home",
+    "Gaming"
+  ]
+  const [formProduct, setFormProduct] = useState<Product>({
+    name: "",
+    brand: "",
+    category: "",
+    description: "",
+    imageUrl: "",
+    price: 0.00,
+    stock: 0.00,
+    updatedAt: new Date().toISOString(),
+  })
+  function writerFormProduct(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement| HTMLSelectElement>) {
+    setFormProduct(
+      {
+        ...formProduct,
+        [event.target.id]: event.target.value
+      }
+    )
+  }
+  async function sendForm() {
+    if(formProduct.name === "" || formProduct.price <= 0 || formProduct.stock < 0){
+      alert("Please fill in all required fields.");
+      return;
+    }
+    const response = await fetch("http://localhost:8020/product/save", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(formProduct)
+    });
+    if(response.ok) {
+      alert("Product saved successfully");
+    } else {
+      alert("Error saving product");
+    }
+    console.log(formProduct)
+  }
+  return(
             <Dialog>
-      <form>
+      <div>
         <DialogTrigger asChild>
           <button className="rounded-[5px] w-[60%] py-2 bg-purple-600 text-white cursor-pointer ">New Product</button>
         </DialogTrigger>
@@ -47,84 +120,80 @@ export function ProductDialog(){
               
             <div className="grid grid-cols-3 gap-4">
 <Field>
-                <FieldLabel htmlFor="checkout-7j9-card-name-43j">
+                <FieldLabel htmlFor="name">
                   Product Name
                 </FieldLabel>
                 <Input
-                  id="checkout-7j9-card-name-43j"
-                  placeholder="Evil Rabbit"
+                  id="name"
+                  placeholder="Ipad Pro"
                   required
+                  onChange={writerFormProduct}
+                  value={formProduct.name}
                 />
               </Field>
               <Field>
-                <FieldLabel htmlFor="checkout-7j9-card-number-uw1">
+                <FieldLabel htmlFor="brand">
                   Brand
                 </FieldLabel>
-                 <Select defaultValue="">
-                    <SelectTrigger id="checkout-exp-month-ts6">
-                      <SelectValue placeholder="..." />
+                 <Select value={formProduct.brand} onValueChange={(value)=>setFormProduct({...formProduct, brand: value})}>
+                    <SelectTrigger >
+                      <SelectValue placeholder="Apple" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="01">Samsung</SelectItem>
-                      <SelectItem value="02">Apple</SelectItem>
-                      <SelectItem value="03">Sony</SelectItem>
+                      {brands.map((brand)=>(
+                        <SelectItem key={brand} value={brand}>{brand}</SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
               </Field>
 
                 <Field>
-                <FieldLabel htmlFor="checkout-7j9-card-number-uw1">
+                <FieldLabel htmlFor="category">
                   Category
                 </FieldLabel>
-                 <Select defaultValue="">
-                    <SelectTrigger id="checkout-exp-month-ts6">
-                      <SelectValue placeholder="..." />
+                 <Select value={formProduct.category} onValueChange={(value)=>setFormProduct({...formProduct, category: value})}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="tablets" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="01">Samsung</SelectItem>
-                      <SelectItem value="02">Apple</SelectItem>
-                      <SelectItem value="03">Sony</SelectItem>
+                     {categories.map((category)=>(
+                        <SelectItem key={category} value={category}>{category}</SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
               </Field>
               </div>
               <div className="grid grid-cols-3 gap-4">
                 <Field>
-                  <FieldLabel htmlFor="checkout-exp-month-ts6">
+                  <FieldLabel htmlFor="price">
                     Price
                   </FieldLabel>
-                  <Input type="number" id="checkout-exp-month-ts6" placeholder="..." required />
+                  <Input type="number" id="price" placeholder="0.00" required onChange={writerFormProduct} value={formProduct.price} />
                 </Field>
                 <Field>
-                  <FieldLabel htmlFor="checkout-7j9-exp-year-f59">
+                  <FieldLabel htmlFor="stock">
                     Stock
                   </FieldLabel>
-                  <Input type="number" id="checkout-7j9-exp-year-f59" placeholder="..." required />
+                  <Input type="number" id="stock" placeholder="0.00" required onChange={writerFormProduct} value={formProduct.stock} />
                 </Field>
                 <Field>
                   <div className="grid w-full max-w-sm items-center gap-3">
-      <FieldLabel htmlFor="picture">Picture</FieldLabel>
-      <Input id="picture" type="file" />
-    </div>
+      <FieldLabel htmlFor="imageUrl">Picture</FieldLabel>
+<Input id="imageUrl" placeholder="https://example.com/image.jpg" required onChange={writerFormProduct} value={formProduct.imageUrl} />    </div>
                 </Field>
               </div>
-              <Field>
-                    <div className="flex items-center space-x-2">
-      <Switch id="airplane-mode" />
-      <FieldLabel htmlFor="airplane-mode">Active</FieldLabel>
-    </div>
-              </Field>
+
               <Field>
                     <div className="grid w-full gap-3">
-      <FieldLabel htmlFor="message">Description</FieldLabel>
-      <Textarea placeholder="Type your message here." id="message" />
+      <FieldLabel htmlFor="description">Description</FieldLabel>
+      <Textarea placeholder="Type your message here." id="description" value={formProduct.description} onChange={writerFormProduct} />
     </div>
               </Field>
             </FieldGroup>
           </FieldSet>
 
           <Field orientation="horizontal">
-            <Button type="submit">Submit</Button>
+            <Button type="button" onClick={sendForm}>Submit</Button>
             <Button variant="outline" type="button">
               Cancel
             </Button>
@@ -134,7 +203,7 @@ export function ProductDialog(){
 
           
         </DialogContent>
-      </form>
+      </div>
     </Dialog>
     )
 }
