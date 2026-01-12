@@ -16,6 +16,8 @@ import {
 import { Input } from "@/components/ui/input"
 import { Link, useNavigate } from "react-router-dom"
 import { useState } from "react"
+import { accessSignin } from "@/services/UserService"
+import type { User } from "@/types/user"
 
 export function LoginForm({
   className,
@@ -43,19 +45,8 @@ const [signinForm, setSigninForm] = useState<signin>({
       alert("Please fill in all fields.");
       return;
       }
-      const response = await fetch(`http://localhost:8020/user/access`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(signinForm)
-      });
-   if(response.ok){
-    const data = await response.json();
-    localStorage.setItem("account", JSON.stringify(data));
-    navegate("/account/userinfo")
-  }
-    else alert("Login failed. Please check your credentials.")
+   await accessSignin(signinForm as signin as User)
+  navegate("/account/userinfo")
     }
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>

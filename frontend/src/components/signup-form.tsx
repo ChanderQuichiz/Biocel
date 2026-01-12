@@ -11,6 +11,8 @@ import {
 import { Input } from "@/components/ui/input"
 import { Link } from "react-router-dom"
 import { useState } from "react"
+import { saveFormSignup } from "@/services/UserService"
+import type { User } from "@/types/user"
 
 export function SignupForm({
   className,
@@ -48,18 +50,7 @@ const [formSignup, setFormSignup] = useState<signup>({
       ...formSignup,
       confirmPassword: undefined
     })
-    const response = await fetch('http://localhost:8020/user/save', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(formSignup)
-    })
-   if(response.ok){
-    alert('User created successfully')
-   }else{
-    alert('Error creating user')
-   }
+  saveFormSignup(formSignup as User)
   }
  return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>

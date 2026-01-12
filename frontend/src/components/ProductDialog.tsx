@@ -18,9 +18,10 @@ import {
 } from "@/components/ui/select"
 import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog"
 import { Textarea } from "@headlessui/react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import type { Product } from "@/types/product"
-export function ProductDialog(){
+import { getProductsByPage, saveProduct } from "@/services/ProductService"
+export function ProductDialog({setData, activeDialog, setActiveDialog, productEdit }:{setData:React.Dispatch<React.SetStateAction<Product[]>>, activeDialog:boolean, setActiveDialog:React.Dispatch<React.SetStateAction<boolean>>, productEdit:Product | null}) {
    const brands = [
     "Apple",
     "Samsung",
@@ -66,15 +67,17 @@ export function ProductDialog(){
     "Gaming"
   ]
   const [formProduct, setFormProduct] = useState<Product>({
-    name: "",
-    brand: "",
-    category: "",
-    description: "",
-    imageUrl: "",
-    price: 0.00,
-    stock: 0.00,
+    ...productEdit as Product,
     updatedAt: new Date().toISOString(),
   })
+  function loadProductEdit(){
+    if(productEdit){
+       setFormProduct({
+        ...productEdit,
+        updatedAt: new Date().toISOString(),
+      })
+    }
+  }
   function writerFormProduct(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement| HTMLSelectElement>) {
     setFormProduct(
       {
@@ -88,116 +91,137 @@ export function ProductDialog(){
       alert("Please fill in all required fields.");
       return;
     }
-    const response = await fetch("http://localhost:8020/product/save", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(formProduct)
-    });
-    if(response.ok) {
-      alert("Product saved successfully");
-    } else {
-      alert("Error saving product");
-    }
+
+    await saveProduct(formProduct)
+    
     console.log(formProduct)
+    setData(await getProductsByPage(1))
   }
+
+  useEffect(()=>{
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    loadProductEdit()
+  },[productEdit])
   return(
-            <Dialog>
+            <Dialog open={activeDialog} onOpenChange={(open)=>{
+              setActiveDialog(open)
+              if(!open){
+                
+            setFormProduct({
+              productId: undefined,
+              name: "",
+              brand: "",
+              category: "",
+              description: "",
+              imageUrl: "",
+              price: 0,
+              stock: 0,
+        updatedAt: new Date().toISOString(),
+            })
+          
+            }}}>
       <div>
         <DialogTrigger asChild>
-          <button className="rounded-[5px] w-[60%] py-2 bg-purple-600 text-white cursor-pointer ">New Product</button>
+          <button className="rounded-[5px] w-[60%] py-2 bg-purple-600 text-white cursor-pointer " >New Product</button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[750px]">
     
-  <FieldGroup>
-          <FieldSet>
-            <FieldLegend>Register new Product</FieldLegend>
-            <FieldDescription>
-              All transactions are secure and encrypted
-            </FieldDescription>
-            <FieldGroup>
-              
-            <div className="grid grid-cols-3 gap-4">
-<Field>
-                <FieldLabel htmlFor="name">
-                  Product Name
-                </FieldLabel>
-                <Input
-                  id="name"
-                  placeholder="Ipad Pro"
-                  required
-                  onChange={writerFormProduct}
-                  value={formProduct.name}
-                />
-              </Field>
-              <Field>
-                <FieldLabel htmlFor="brand">
-                  Brand
-                </FieldLabel>
-                 <Select value={formProduct.brand} onValueChange={(value)=>setFormProduct({...formProduct, brand: value})}>
-                    <SelectTrigger >
-                      <SelectValue placeholder="Apple" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {brands.map((brand)=>(
-                        <SelectItem key={brand} value={brand}>{brand}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-              </Field>
+        <FieldGroup>
+                <FieldSet>
+                  <FieldLegend>Register new Product</FieldLegend>
+                  <FieldDescription>
+                    All transactions are secure and encrypted
+                  </FieldDescription>
+                  <FieldGroup>
+                      <Field>
+           
+                      <Input
+                      type="hidden"
+                        id="productId"
+                        onChange={writerFormProduct}
+                        value={formProduct.productId}
+                      />
+                    </Field>
+                  <div className="grid grid-cols-3 gap-4">
+      <Field>
+                      <FieldLabel htmlFor="name">
+                        Product Name
+                      </FieldLabel>
+                      <Input
+                        id="name"
+                        placeholder="Ipad Pro"
+                        required
+                        onChange={writerFormProduct}
+                        value={formProduct.name}
+                      />
+                    </Field>
+                    <Field>
+                      <FieldLabel htmlFor="brand">
+                        Brand
+                      </FieldLabel>
+                      <Select value={formProduct.brand} onValueChange={(value)=>setFormProduct({...formProduct, brand: value})}>
+                          <SelectTrigger >
+                            <SelectValue placeholder="Apple" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {brands.map((brand)=>(
+                              <SelectItem key={brand} value={brand}>{brand}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                    </Field>
 
-                <Field>
-                <FieldLabel htmlFor="category">
-                  Category
-                </FieldLabel>
-                 <Select value={formProduct.category} onValueChange={(value)=>setFormProduct({...formProduct, category: value})}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="tablets" />
-                    </SelectTrigger>
-                    <SelectContent>
-                     {categories.map((category)=>(
-                        <SelectItem key={category} value={category}>{category}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-              </Field>
-              </div>
-              <div className="grid grid-cols-3 gap-4">
-                <Field>
-                  <FieldLabel htmlFor="price">
-                    Price
-                  </FieldLabel>
-                  <Input type="number" id="price" placeholder="0.00" required onChange={writerFormProduct} value={formProduct.price} />
-                </Field>
-                <Field>
-                  <FieldLabel htmlFor="stock">
-                    Stock
-                  </FieldLabel>
-                  <Input type="number" id="stock" placeholder="0.00" required onChange={writerFormProduct} value={formProduct.stock} />
-                </Field>
-                <Field>
-                  <div className="grid w-full max-w-sm items-center gap-3">
-      <FieldLabel htmlFor="imageUrl">Picture</FieldLabel>
-<Input id="imageUrl" placeholder="https://example.com/image.jpg" required onChange={writerFormProduct} value={formProduct.imageUrl} />    </div>
-                </Field>
-              </div>
+                      <Field>
+                      <FieldLabel htmlFor="category">
+                        Category
+                      </FieldLabel>
+                      <Select value={formProduct.category} onValueChange={(value)=>setFormProduct({...formProduct, category: value})}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="tablets" />
+                          </SelectTrigger>
+                          <SelectContent>
+                          {categories.map((category)=>(
+                              <SelectItem key={category} value={category}>{category}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                    </Field>
+                    </div>
+                    <div className="grid grid-cols-3 gap-4">
+                      <Field>
+                        <FieldLabel htmlFor="price">
+                          Price
+                        </FieldLabel>
+                        <Input type="number" id="price" placeholder="0.00" required onChange={writerFormProduct} value={formProduct.price} />
+                      </Field>
+                      <Field>
+                        <FieldLabel htmlFor="stock">
+                          Stock
+                        </FieldLabel>
+                        <Input type="number" id="stock" placeholder="0.00" required onChange={writerFormProduct} value={formProduct.stock} />
+                      </Field>
+                      <Field>
+                        <div className="grid w-full max-w-sm items-center gap-3">
+            <FieldLabel htmlFor="imageUrl">Picture</FieldLabel>
+      <Input id="imageUrl" placeholder="https://example.com/image.jpg" required onChange={writerFormProduct} value={formProduct.imageUrl} />    </div>
+                      </Field>
+                    </div>
 
-              <Field>
-                    <div className="grid w-full gap-3">
-      <FieldLabel htmlFor="description">Description</FieldLabel>
-      <Textarea placeholder="Type your message here." id="description" value={formProduct.description} onChange={writerFormProduct} />
-    </div>
-              </Field>
-            </FieldGroup>
-          </FieldSet>
+                    <Field>
+                          <div className="grid w-full gap-3">
+            <FieldLabel htmlFor="description">Description</FieldLabel>
+            <Textarea placeholder="Type your message here." id="description" value={formProduct.description} onChange={writerFormProduct} />
+          </div>
+                    </Field>
+                  </FieldGroup>
+                </FieldSet>
 
-          <Field orientation="horizontal">
-            <Button type="button" onClick={sendForm}>Submit</Button>
-            <Button variant="outline" type="button">
-              Cancel
-            </Button>
-          </Field>
+                <Field orientation="horizontal">
+                  <Button type="button" onClick={sendForm}>Submit</Button>
+                  <Button variant="outline" type="button">
+                    Cancel
+                  </Button>
+                </Field>
         </FieldGroup>
 
 

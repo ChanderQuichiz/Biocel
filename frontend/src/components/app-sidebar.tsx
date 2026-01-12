@@ -2,16 +2,22 @@
 
 import * as React from "react"
 import {
-  BookOpen,
-  Bot,
+  AudioWaveform,
+
   Command,
-  Settings2,
-  SquareTerminal,
+  Dock,
+  
+  GalleryVerticalEnd,
+  Landmark,
+  Map,
+  PieChart,
+  Tag,
+  Users,
+
 } from "lucide-react"
 
-import { NavMain } from "@/components/nav-main"
+import { NavProjects } from "@/components/nav-projects"
 import { NavUser } from "@/components/nav-user"
-import { TeamSwitcher } from "@/components/team-switcher"
 import {
   Sidebar,
   SidebarContent,
@@ -23,107 +29,78 @@ import {
 // This is sample data.
 const data = {
   user: {
-    name: "shadcn",
+    firstName: "shadcn",
     email: "m@example.com",
     avatar: "/avatars/shadcn.jpg",
+    lastName: "ui",
   },
   teams: [
     {
-      name: "Biocel Dashboard",
+      name: "Acme Inc",
+      logo: GalleryVerticalEnd,
+      plan: "Enterprise",
+    },
+    {
+      name: "Acme Corp.",
+      logo: AudioWaveform,
+      plan: "Startup",
+    },
+    {
+      name: "Evil Corp.",
       logo: Command,
       plan: "Free",
-    }
-  ],
-  navMain: [
-    {
-      title: "Maintenance",
-      url: "#",
-      icon: SquareTerminal,
-      isActive: true,
-      items: [
-        {
-          title: "Products",
-          url: "/dashboard/maintenance/products",
-        },
-        {
-          title: "Categories",
-          url: "/dashboard/maintenance/categories",
-        },
-        {
-          title: "Brands",
-          url: "/dashboard/maintenance/brands",
-        },
-      ],
-    },
-    {
-      title: "Datatables",
-      url: "#",
-      icon: Bot,
-      items: [
-        {
-          title: "Users",
-          url: "/dashboard/datatables/users",
-        },
-        {
-          title: "Orders",
-          url: "/dashboard/datatables/orders",
-        },
-        {
-          title: "Payments",
-          url: "/dashboard/datatables/payments",
-        },
-      ],
-    },
-    {
-      title: "Deliveries",
-      url: "#",
-      icon: BookOpen,
-      items: [
-        {
-          title: "Deliveries orders",
-          url: "/dashboard/deliveries/orders",
-        },
-        {
-          title: "Deliveries History",
-          url: "/dashboard/deliveries/history",
-        }
-      ],
-    },
-    {
-      title: "Dashboard",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "General",
-          url: "#",
-        },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
-        },
-      ],
     },
   ],
 
+  projects: [
+    {
+      name: "Products",
+      url: "/dashboard/products",
+      icon: Tag,
+    },
+    {
+      name: "Orders",
+      url: "/dashboard/orders",
+      icon: Dock,
+    },
+    
+    {
+      name: "Deliveries",
+      url: "/dashboard/deliveries",
+      icon: Map,
+    },
+    {
+      name: "Payments",
+      url: "/dashboard/payments",
+      icon: Landmark,
+    },
+        {
+      name: "Users",
+      url: "/dashboard/users",
+      icon: Users,
+    },
+        {
+      name: "Reports",
+      url: "/dashboard/reports",
+      icon: PieChart,
+    }
+  ],
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
-      <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
+      <SidebarHeader >
+     
+                <img
+                src="https://i0.wp.com/www.biocel.ie/wp-content/uploads/2021/11/Logo-Full-Colour-SigTag.png?fit=600%2C193&ssl=1"
+          alt="Biocel Logo"
+          className=" block my-4 ml-8 max-w-[150px]"
+        />
+  
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <NavProjects projects={data.projects} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />

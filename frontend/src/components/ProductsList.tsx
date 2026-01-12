@@ -1,9 +1,20 @@
-import type { product } from "../types/Product";
-import { useState } from "react";
+import type { Product } from "../types/product";
+import { useEffect, useState } from "react";
 import ProductQuickView from "./ProductQuickView";
-export function ProductList({products}:{products: product[]}) {
+import { PaginationDemo } from "./PaginationDemo";
+import { getProductsByPage } from "@/services/ProductService";
+export function ProductList({page}: {page: number}) {
+  const [products, setProducts] = useState<Product[]>([]);
+  async function fetchProducts(){
+    const response = await getProductsByPage(page);
+  setProducts(response);
+  }
+  useEffect(()=>{
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchProducts();
+  },[])
   const [open, setOpen] = useState<boolean>(false);
-  const [productSelected , setProductSelected] = useState<product>({} as product);
+  const [productSelected , setProductSelected] = useState<Product>({} as Product);
     return(
              <div className="bg-white">
       <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
@@ -13,8 +24,8 @@ export function ProductList({products}:{products: product[]}) {
           {products.map((product) => (
             <div key={product.productId} className="flex cursor-pointer flex-row group relative">
               <img
-                alt={product.productName}
-                src={product.image}
+                alt={product.name}
+                src={product.imageUrl}
                 className="aspect-square max-w-[150px] w-auto rounded-md bg-gray-200 object-cover group-hover:opacity-75 lg:aspect-auto lg:h-40"
               />
               <div className="mt-4 flex justify-between">
@@ -25,7 +36,7 @@ export function ProductList({products}:{products: product[]}) {
                           {open && <ProductQuickView open={open} setOpen={setOpen} product={productSelected}/>}
 
                       <span aria-hidden="true" className=" absolute inset-0" />
-                      {product.productName}
+                      {product.name}
                     </a>
                   </h3>
                   <p className="mt-1 text-sm text-gray-500 text-[20px]">${product.price.toFixed(2)}</p>
@@ -37,6 +48,7 @@ export function ProductList({products}:{products: product[]}) {
                        
         </div>
       </div>
+      <PaginationDemo/>
      </div>
     )
 }
