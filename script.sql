@@ -110,3 +110,64 @@ CREATE TABLE delivery_history (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (delivery_id) REFERENCES delivery(delivery_id)
 );
+select * from orders
+DELIMITER $$
+CREATE PROCEDURE create_order(
+    IN p_user_id INT,
+    IN p_address_id INT,
+    IN p_total DECIMAL(10,2),
+    IN p_estimated_delivery DATETIME,
+    IN p_payment_method VARCHAR(20),
+    IN p_details JSON
+)
+BEGIN
+    DECLARE stock_current INT;
+    DECLARE i INT DEFAULT 0;
+    DECLARE n INT;
+    DECLARE order_id INT;
+
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+        RESIGNAL;
+    END;
+
+    START TRANSACTION;
+
+    INSERT INTO orders (user_id, address_id, total, estimated_delivery)
+    VALUES (p_user_id, p_address_id, p_total, p_estimated_delivery);
+
+    SET order_id = LAST_INSERT_ID();
+    SET n = JSON_LENGTH(p_details);
+
+    WHILE i < n DO
+        SELECT stock INTO stock_current
+        FROM products
+        WHERE product_id = CAST(JSON_UNQUOTE(JSON_EXTRACT(p_details, CONCAT('$[', i, '].product_id'))) AS UNSIGNED);
+
+        IF stock_current < CAST(JSON_UNQUOTE(JSON_EXTRACT(p_details, CONCAT('$[', i, '].quantity'))) AS UNSIGNED) THEN
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Insufficient stock';
+        END IF;
+
+        INSERT INTO order_details (order_id, product_id, quantity, price, subtotal)
+        VALUES (
+            order_id,
+            CAST(JSON_UNQUOTE(JSON_EXTRACT(p_details, CONCAT('$[', i, '].product_id'))) AS UNSIGNED),
+            CAST(JSON_UNQUOTE(JSON_EXTRACT(p_details, CONCAT('$[', i, '].quantity'))) AS UNSIGNED),
+            CAST(JSON_UNQUOTE(JSON_EXTRACT(p_details, CONCAT('$[', i, '].price'))) AS DECIMAL(10,2)),
+            CAST(JSON_UNQUOTE(JSON_EXTRACT(p_details, CONCAT('$[', i, '].subtotal'))) AS DECIMAL(10,2))
+        );
+
+        UPDATE products
+        SET stock = stock - CAST(JSON_UNQUOTE(JSON_EXTRACT(p_details, CONCAT('$[', i, '].quantity'))) AS UNSIGNED)
+        WHERE product_id = CAST(JSON_UNQUOTE(JSON_EXTRACT(p_details, CONCAT('$[', i, '].product_id'))) AS UNSIGNED);
+
+        SET i = i + 1;
+    END WHILE;
+
+    INSERT INTO payments (order_id, payment_method, amount)
+    VALUES (order_id, p_payment_method, p_total);
+
+    COMMIT;
+END $$

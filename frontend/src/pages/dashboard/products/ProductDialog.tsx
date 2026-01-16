@@ -16,9 +16,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog"
-import { Textarea } from "@headlessui/react"
-import { useEffect, useState } from "react"
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
+import { Textarea } from "@/components/ui/textarea"
+import * as React from "react"
 import type { Product } from "@/types/product"
 import { getProductsByPage, saveProduct } from "@/services/ProductService"
 export function ProductDialog({setData, activeDialog, setActiveDialog, productEdit }:{setData:React.Dispatch<React.SetStateAction<Product[]>>, activeDialog:boolean, setActiveDialog:React.Dispatch<React.SetStateAction<boolean>>, productEdit:Product | null}) {
@@ -66,7 +66,7 @@ export function ProductDialog({setData, activeDialog, setActiveDialog, productEd
     "Smart Home",
     "Gaming"
   ]
-  const [formProduct, setFormProduct] = useState<Product>({
+  const [formProduct, setFormProduct] = React.useState<Product>({
     ...productEdit as Product,
     updatedAt: new Date().toISOString(),
   })
@@ -87,7 +87,7 @@ export function ProductDialog({setData, activeDialog, setActiveDialog, productEd
     )
   }
   async function sendForm() {
-    if(formProduct.name === "" || formProduct.price <= 0 || formProduct.stock < 0){
+    if(formProduct.name === "" || formProduct.price! <= 0 || formProduct.stock! < 0){
       alert("Please fill in all required fields.");
       return;
     }
@@ -98,7 +98,7 @@ export function ProductDialog({setData, activeDialog, setActiveDialog, productEd
     setData(await getProductsByPage(1))
   }
 
-  useEffect(()=>{
+  React.useEffect(()=>{
     // eslint-disable-next-line react-hooks/set-state-in-effect
     loadProductEdit()
   },[productEdit])

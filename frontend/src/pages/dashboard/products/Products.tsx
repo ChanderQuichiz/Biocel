@@ -1,5 +1,5 @@
-import { DataTableDemo } from "@/components/DataTableDemo";
-import { ProductDialog } from "@/components/ProductDialog";
+import { DataTableDemo } from "./DataTableDemo";
+import { ProductDialog } from "./ProductDialog";
 import type { Product } from "@/types/product";
 import React from "react";
 

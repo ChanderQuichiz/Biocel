@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Link } from "react-router-dom"
-import { useState } from "react"
+import * as React from "react"
 import { saveFormSignup } from "@/services/UserService"
 import type { User } from "@/types/user"
 
@@ -25,7 +25,7 @@ export function SignupForm({
   password: string;
   confirmPassword?: string;
 }
-const [formSignup, setFormSignup] = useState<signup>({
+const [formSignup, setFormSignup] = React.useState<signup>({
   firstName: "",
   lastName: "",
   email: "",

@@ -1,5 +1,5 @@
-import { CarouselDemo } from "@/components/CarouselDemo";
-import { ProductList } from "../components/ProductsList";
+import { CarouselDemo } from "@/pages/ecommerce/home/CarouselDemo";
+import { ProductList } from './ProductsList'
 import { useParams } from "react-router-dom";
 
 export function Home(){
@@ -7,7 +7,7 @@ export function Home(){
   const page = Number((params as { page?: string }).page) || 1;
   return(
     <>
-    <div className="flex flex-row">
+    <div className="grid sm:grid-cols-2 grid-cols-1">
            <CarouselDemo/>
           <CarouselDemo/>
     </div>

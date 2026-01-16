@@ -1,20 +1,20 @@
-import type { Product } from "../types/product";
-import { useEffect, useState } from "react";
-import ProductQuickView from "./ProductQuickView";
-import { PaginationDemo } from "./PaginationDemo";
+import type { Product } from "@/types/product";
+import * as React from "react";
+import ProductQuickView from "../../../components/ProductQuickView";
+import { PaginationDemo } from './PaginationDemo';
 import { getProductsByPage } from "@/services/ProductService";
 export function ProductList({page}: {page: number}) {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = React.useState<Product[]>([]);
   async function fetchProducts(){
     const response = await getProductsByPage(page);
   setProducts(response);
   }
-  useEffect(()=>{
+  React.useEffect(()=>{
     // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchProducts();
   },[])
-  const [open, setOpen] = useState<boolean>(false);
-  const [productSelected , setProductSelected] = useState<Product>({} as Product);
+  const [open, setOpen] = React.useState<boolean>(false);
+  const [productSelected , setProductSelected] = React.useState<Product>({} as Product);
     return(
              <div className="bg-white">
       <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
@@ -39,7 +39,7 @@ export function ProductList({page}: {page: number}) {
                       {product.name}
                     </a>
                   </h3>
-                  <p className="mt-1 text-sm text-gray-500 text-[20px]">${product.price.toFixed(2)}</p>
+                  <p className="mt-1 text-sm text-gray-500 text-[20px]">${product.price!.toFixed(2)}</p>
 
                 </div>
               </div>

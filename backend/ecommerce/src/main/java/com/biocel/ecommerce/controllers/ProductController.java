@@ -39,15 +39,12 @@ public class ProductController {
             return ResponseEntity.status(500).build();
         }
     }
-    @GetMapping("/findbyid/{id}")
-    public ResponseEntity<Product> findbyid(@PathVariable int id) {
-        Product product = productRepository.findById(id).orElse(null);
-        if(product != null) {
-            return ResponseEntity.ok(product);
-        } else {
-            return ResponseEntity.notFound().build();
+    @PostMapping("/findallbyid")
+    public ResponseEntity<List<Product>> findbyid( @RequestBody List<Integer> ids) {
+        List<Product> products = productRepository.findAllById(ids);
+        return ResponseEntity.ok(products);
         }
-    }
+    
     @GetMapping("/page/{page}")
     public ResponseEntity<List<Product>> page(@PathVariable int page) {
         List<Product> products = productService.getPagedProducts(page, 10);
