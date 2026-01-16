@@ -1,5 +1,5 @@
-/*  */import { EcommerceBreadCrumb } from "@/components/EcommerceBreadCrumb";
-import EcommerceHeader from "@/components/EcommerceHeader";
+/*  */import { EcommerceBreadCrumb } from "@/pages/ecommerce/EcommerceBreadCrumb";
+import EcommerceHeader from "./EcommerceHeader";
 import { Outlet } from "react-router-dom";
 
 export function Ecommerce() {

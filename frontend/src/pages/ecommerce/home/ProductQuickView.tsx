@@ -4,13 +4,13 @@ import { Dialog, DialogBackdrop, DialogPanel } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 // import { StarIcon } from '@heroicons/react/20/solid'
 
-import type { product } from "../types/Product";
-
+import type { Product } from '@/types/product'
+import { insertOrderDetail } from '@/services/OrderDetail'
  //function classNames(...classes:string[]) {
   //return classes.filter(Boolean).join(' ')
 //}
 
-export default function ProductQuickView({open, setOpen , product}:{open:boolean, setOpen:React.Dispatch<React.SetStateAction<boolean>>, product:product}) {
+export default function ProductQuickView({open, setOpen , product}:{open:boolean, setOpen:React.Dispatch<React.SetStateAction<boolean>>, product:Product}) {
 
   return (
     <Dialog open={open} onClose={setOpen} className="relative z-10">
@@ -35,24 +35,24 @@ export default function ProductQuickView({open, setOpen , product}:{open:boolean
                 <XMarkIcon aria-hidden="true" className="size-6" />
               </button>
 
-              <div className="grid w-full grid-cols-1 items-start gap-x-6 gap-y-8 sm:grid-cols-12 lg:gap-x-8">
+              <div className="m-2 grid w-full grid-cols-1 items-start gap-x-6 gap-y-8 sm:grid-cols-12 lg:gap-x-8">
                 <img
-                  alt={product.productName}
-                  src={product.image}
+                  alt={product.name}
+                  src={product.imageUrl}
                   className=" object-cover w-full rounded-lg bg-gray-100 object-cover sm:col-span-4 lg:col-span-5"
                 />
                 <div className="sm:col-span-8 lg:col-span-7">
-                  <h2 className="text-2xl font-bold text-gray-900 sm:pr-12">{product.productName}</h2>
+                    <h2 className="text-[22px] font-bold text-gray-900 sm:pr-12">{product.name}</h2>
 
                   <section aria-labelledby="information-heading" className="mt-2">
+
                     <h3 id="information-heading" className="sr-only">
                       Product information
                     </h3>
-
-                    <p className="text-2xl text-gray-900">{product.description}</p>
-
-                    {/* Reviews */}
-                    <div className="mt-6">
+                    <p className="text-[22px] text-gray-900">${product.price}</p>
+                    <p className='text-[16px] text-gray-600'>{product.description}</p>
+                    {/* Reviews
+                                        <div className="mt-6">
                       <h4 className="sr-only">Reviews</h4>
                       <div className="flex items-center">
                       {/*<div className="flex items-center">
@@ -66,16 +66,19 @@ export default function ProductQuickView({open, setOpen , product}:{open:boolean
                               )}
                             />
                           ))}
-                        </div>*/}  
+                        </div>}  
                         <p className="sr-only">2 out of 5 stars</p>
                         <a href="#" className="ml-3 text-sm font-medium text-indigo-600 hover:text-indigo-500">
                           18 reviews
                         </a>
                       </div>
                     </div>
+                    */}
+
+
                   </section>
 
-                  <section aria-labelledby="options-heading" className="mt-10">
+                  <section aria-labelledby="options-heading">
                     <h3 id="options-heading" className="sr-only">
                       Product options
                     </h3>
@@ -83,8 +86,9 @@ export default function ProductQuickView({open, setOpen , product}:{open:boolean
                     <form>
 
                       <button
-                        type="submit"
+                        type="button"
                         className="mt-6 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-hidden"
+                      onClick={()=>insertOrderDetail(product)}
                       >
                         Add to bag
                       </button>

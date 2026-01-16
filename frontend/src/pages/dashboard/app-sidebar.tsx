@@ -16,8 +16,8 @@ import {
 
 } from "lucide-react"
 
-import { NavProjects } from "@/components/nav-projects"
-import { NavUser } from "@/components/nav-user"
+import { NavProjects } from "./nav-projects"
+import { NavUser } from "./nav-user"
 import {
   Sidebar,
   SidebarContent,

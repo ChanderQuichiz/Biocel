@@ -1,5 +1,5 @@
 
-import { SignupForm } from "@/components/signup-form";
+import { SignupForm } from "./signup-form";
 
 export function SignUp() {
   return (

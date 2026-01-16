@@ -16,7 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog"
+import { Dialog, DialogContent, DialogTrigger } from "../../../components/ui/dialog"
 
 
 export function PaymentModal() {

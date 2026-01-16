@@ -22,4 +22,5 @@ public class ProductService {
         Page<Product> productPage = productRepository.findAll(pageable);
         return productPage.getContent();
     }
+
 }

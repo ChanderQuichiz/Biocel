@@ -25,6 +25,8 @@ export async function accessSignin(signinForm:User){
    if(response.ok){
     const data = await response.json();
     localStorage.setItem("account", JSON.stringify(data));
+    window.location.href = "/account/userinfo";
   }
     else alert("Login failed. Please check your credentials.")
+
 }

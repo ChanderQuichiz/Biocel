@@ -14,8 +14,8 @@ import {
   FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { Link, useNavigate } from "react-router-dom"
-import { useState } from "react"
+import { Link } from "react-router-dom"
+import * as React from "react"
 import { accessSignin } from "@/services/UserService"
 import type { User } from "@/types/user"
 
@@ -27,8 +27,7 @@ export function LoginForm({
     email: string
     password: string
   }
-  const navegate = useNavigate()
-const [signinForm, setSigninForm] = useState<signin>({
+const [signinForm, setSigninForm] = React.useState<signin>({
     email: "",
     password: "",
   });
@@ -45,8 +44,8 @@ const [signinForm, setSigninForm] = useState<signin>({
       alert("Please fill in all fields.");
       return;
       }
-   await accessSignin(signinForm as signin as User)
-  navegate("/account/userinfo")
+ await accessSignin(signinForm as signin as User)
+
     }
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>

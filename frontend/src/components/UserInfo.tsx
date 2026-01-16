@@ -1,10 +1,15 @@
-import {  useEffect, useState } from "react";
+import * as React from "react";
 import { AddressTable } from "./AddressTable";
 import type { User } from "@/types/user";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
+import type { Address } from "@/types/address";
 export function UserInfo() {
-  const navegate = useNavigate()
-  const [accountData, setAccountData] = useState<User>(JSON.parse(localStorage.getItem("account") || "{}"));
+    const [addresses, setAddresses] = React.useState<Address[]>([
+    {addressId:1, address: "123 Main St, Lima Cercado", city: "Lima Metropolitana", district: "Lima Cercado", postalCode: "15001", phone: "987654321", addressType: "primary"},
+    {addressId:2, address: "456 Elm St, Miraflores", city: "Lima Metropolitana", district: "Miraflores", postalCode: "15074", phone: "912345678", addressType: "secondary"},
+  ])
+  const navigate = useNavigate()
+  const [accountData, setAccountData] = React.useState<User>(JSON.parse(localStorage.getItem("account") || "{}"));
   function writerAccountData(event: React.ChangeEvent<HTMLInputElement>) {
     setAccountData({
       ...accountData,
@@ -32,12 +37,12 @@ export function UserInfo() {
     alert("Failed to update account data. Please try again.");
   }
 }
- useEffect(()=>{
-  if (!accountData.userId) navegate("/account/signin")
+ React.useEffect(()=>{
+  if (!accountData.userId) navigate("/account/signin")
  },[])
  return(
     
-      <div className="grid grid-cols-2 bg-gray-300 px-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 px-4">
             <div className="border-b border-gray-900/10 pb-12">
           <h2 className="text-base/7 font-semibold text-gray-900">Personal Information</h2>
           <p className="mt-1 text-sm/6 text-gray-600">Use a permanent address where you can receive mail.</p>
@@ -131,13 +136,13 @@ export function UserInfo() {
               
             </div>
       <div className=" sm:col-span-3 ">
-        <button className="bg-blue-400 font-bold cursor-pointer hover:bg-blue-300 text-white rounded-[5px] block w-full mt-8 h-[35px]" onClick={sendChangeAccountData}>Save</button>
+        <button className="bg-blue-400 font-mono cursor-pointer hover:bg-blue-300 text-white rounded-[5px] block w-full mt-8 h-[35px]" onClick={sendChangeAccountData}>Save</button>
       </div>
           </div>
 
         </div>
         <div className="w-full h-full">
-              <AddressTable/>
+          <AddressTable userId={accountData.userId} addresses={addresses} setAddresses={setAddresses} />
         </div>
 
       </div>

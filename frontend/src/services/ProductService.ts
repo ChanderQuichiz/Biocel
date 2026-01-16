@@ -29,3 +29,14 @@ export async function saveProduct(formProduct:Product){
       alert("Error saving product");
     }
 }
+export async function getAllProductById(ids: number[]) {
+    const response = await fetch(`http://localhost:8020/product/findallbyid`,{
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(ids)
+    });
+    const data = await response.json();
+    return data;
+}

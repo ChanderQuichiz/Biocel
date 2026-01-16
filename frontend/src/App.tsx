@@ -1,13 +1,13 @@
-import Dashboard from "./pages/Dashboard";
+import Dashboard from "./pages/dashboard/Dashboard";
 import { UserInfo } from "./components/UserInfo";
-import { Account } from "./pages/Account";
-import Checkout from "./pages/Checkout";
-import { Ecommerce } from "./pages/Ecommerce";
-import { Home } from "./pages/Home";
-import { Products } from "./pages/Products";
-import { Reports } from "./pages/Reports";
-import { SignIn } from "./pages/SignIn";
-import { SignUp } from "./pages/SignUp";
+import { Account } from "./pages/ecommerce/account/Account";
+import Checkout from "./pages/ecommerce/checkout/Checkout";
+import { Ecommerce } from "./pages/ecommerce/Ecommerce";
+import { Home } from "./pages/ecommerce/home/Home";
+import { Products } from "./pages/dashboard/products/Products";
+import { Reports } from "./pages/dashboard/reports/Reports";
+import { SignIn } from "./pages/ecommerce/signin/SignIn";
+import { SignUp } from "./pages/ecommerce/signup/SignUp";
 import { Routes, Route } from "react-router-dom";
 export default function App() {
   return (
