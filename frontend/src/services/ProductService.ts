@@ -40,3 +40,8 @@ export async function getAllProductById(ids: number[]) {
     const data = await response.json();
     return data;
 }
+export async function searchProductsByText(text: string) {
+  const response = await fetch(`http://localhost:8020/product/searchproductsbytext/${text}`);
+  const data = await response.json();
+  return data;
+}

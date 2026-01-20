@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 
 
+
 @RestController
 @CrossOrigin    
 @RequestMapping("/product")
@@ -60,4 +61,10 @@ public ResponseEntity<Void> delete(@PathVariable int id) {
     productRepository.deleteById(id);
     return ResponseEntity.ok().build();
 }
+@GetMapping("/searchproductsbytext/{text}")
+public ResponseEntity<List<Product>> searchProductsBytext(@PathVariable String text) {
+    List<Product> products = productRepository.searchProducts(text);
+    return ResponseEntity.ok(products);
+}
+
 }

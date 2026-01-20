@@ -3,7 +3,6 @@ import EcommerceHeader from "./EcommerceHeader";
 import { Outlet } from "react-router-dom";
 
 export function Ecommerce() {
-  
 return(
   <>
     <div className=" z-10 cursor-pointer fab pl-2 fixed bottom-2 right-1 max-w-[50px]">

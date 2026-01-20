@@ -9,10 +9,12 @@ import { Reports } from "./pages/dashboard/reports/Reports";
 import { SignIn } from "./pages/ecommerce/signin/SignIn";
 import { SignUp } from "./pages/ecommerce/signup/SignUp";
 import { Routes, Route } from "react-router-dom";
+import Search from "./pages/ecommerce/search/Search";
 export default function App() {
   return (
   <Routes>
     <Route element={<Ecommerce/>}>
+      <Route path={"/search/:text"} element={<Search/>}/>
       <Route path={"/home/:page"} element={<Home/>}/>
       <Route index element={<Home/>}/>
       <Route path="checkout" element={<Checkout/>}/>

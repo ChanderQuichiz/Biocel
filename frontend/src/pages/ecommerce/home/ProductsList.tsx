@@ -17,20 +17,20 @@ export function ProductList({page}: {page: number}) {
   const [productSelected , setProductSelected] = React.useState<Product>({} as Product);
     return(
              <div className="bg-white">
-      <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
-        <h2 className="text-2xl font-bold tracking-tight text-gray-900">Customers also purchased</h2>
+      <div className="bg-gray-100  mx-auto max-w-2xl px-4 py-4 sm:px-6  lg:max-w-7xl lg:px-8">
+        <h2 className="text-black font-medium text-4xl font-semibold ">Products</h2>
 
-        <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
+        <div className=" mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
           {products.map((product) => (
-            <div key={product.productId} className="flex cursor-pointer flex-row group relative">
+            <div key={product.productId} className="sm:grid sm:place-content-center sm:text-center text-start bg-white  rounded-3xl px-4 flex cursor-pointer flex-row sm:flex-col group relative">
               <img
                 alt={product.name}
                 src={product.imageUrl}
-                className="aspect-square max-w-[150px] w-auto rounded-md bg-gray-200 object-cover group-hover:opacity-75 lg:aspect-auto lg:h-40"
+                className=" aspect-square max-w-[150px] w-auto rounded-md bg-gray-200 object-cover group-hover:opacity-75 lg:aspect-auto lg:h-40"
               />
               <div className="mt-4 flex justify-between">
                 <div className="flex flex-col gap-4 text-[16px]">
-                  <h3 className="text-sm text-gray-700 text-[20px]">
+                  <h3 className="text-sm justify-between text-gray-700 text-[20px]">
                     <a onClick={()=>{setOpen(true); setProductSelected(product)}} >
 
                           {open && <ProductQuickView open={open} setOpen={setOpen} product={productSelected}/>}
