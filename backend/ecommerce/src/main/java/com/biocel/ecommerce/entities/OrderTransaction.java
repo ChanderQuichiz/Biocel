@@ -1,5 +1,7 @@
 package com.biocel.ecommerce.entities;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,6 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class OrderTransaction {
     private String paymentMethod;
-    private String details;
+    private List<OrderDetail> details;
     private Order order;
 }

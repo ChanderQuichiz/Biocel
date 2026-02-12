@@ -16,7 +16,6 @@ export function insertOrderDetail(product: Product){
     }
     else cart.push(orderDetail);
     localStorage.setItem('cart', JSON.stringify(cart));
-    console.log('cart:', cart);
 }
 export function deleteOrderDetail(productId: Product['productId']){
     const cart = JSON.parse(localStorage.getItem('cart') || '[]');
@@ -33,4 +32,10 @@ export function deleteOrderDetail(productId: Product['productId']){
 export function calculateTotal(){
     const cart = JSON.parse(localStorage.getItem('cart') || '[]');
     return cart.reduce((total:number, item:OrderDetail)=>total+(item.subtotal||0), 0);
+}
+
+export async function searchOrderDetails(filters:string=''){
+    const response = await fetch(`http://localhost:8020/orderdetails/search${filters}`)
+    const data = await response.json();
+    return data.content as OrderDetail[];
 }

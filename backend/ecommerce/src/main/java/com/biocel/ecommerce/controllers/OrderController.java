@@ -1,6 +1,10 @@
 package com.biocel.ecommerce.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -8,15 +12,27 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.biocel.ecommerce.entities.Order;
 import com.biocel.ecommerce.entities.OrderTransaction;
+import com.biocel.ecommerce.repositories.OrderRepository;
 import com.biocel.ecommerce.services.OrderService;
 
+import net.kaczmarzyk.spring.data.jpa.domain.Equal;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
+
+import org.springframework.web.bind.annotation.GetMapping;
+
+
+@RequestMapping("/orders")
 @CrossOrigin
-@RequestMapping("/order")
+
 @RestController
 public class OrderController {
 
-  
+  @Autowired
+    private OrderRepository orderRepository;
+
     @Autowired
     private OrderService orderService;
     
@@ -28,5 +44,14 @@ public class OrderController {
         } else {
             return ResponseEntity.status(400).body("Error creating order");
         }
+    }
+    
+    @GetMapping("/search")
+    public ResponseEntity<Page<Order>> search(@And({
+        @Spec(path = "user.userId", spec = Equal.class),
+        @Spec(path = "status", spec = Equal.class)
+    })Specification<Order> spec, Pageable pageable) {
+        Page<Order> orders = orderRepository.findAll(spec, pageable);
+        return new ResponseEntity<>(orders, HttpStatus.OK);
     }
 }

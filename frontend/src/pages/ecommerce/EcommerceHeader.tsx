@@ -15,7 +15,7 @@ export default function EcommerceHeader() {
     { name: 'Home', href: '/' },
     { name: 'Account', href: '/account/userinfo'} ,
     { name: 'Checkout', href: '/checkout' },
-    { name: 'Dashboard', href: '/dashboard' },
+    { name: 'Orders', href: '/orders' },
   ];
 
   return (
@@ -37,7 +37,7 @@ export default function EcommerceHeader() {
               </div>
 
               {/* Logo & Desktop Menu */}
-              <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
+              <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-between">
                 <div className="flex shrink-0 items-center">
                   <Link to="/">
                     <img
@@ -46,11 +46,12 @@ export default function EcommerceHeader() {
                       className="h-8 w-auto"
                     />
                   </Link>
+
                 </div>
+                                     <div className="hidden  sm:block w-[35vw]"><SearchInput   /></div>
 
                 <div className="hidden sm:ml-6 sm:block">
                   <div className="flex items-center space-x-4">
-                    <SearchInput />
                     {navigation.map((item) => {
                       const isCurrent = currentPage === item.name;
                       return (
@@ -74,68 +75,7 @@ export default function EcommerceHeader() {
               </div>
 
               {/* Right side icons */}
-              <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                <button
-                  type="button"
-                  className="relative rounded-full p-1 text-gray-400 hover:text-white focus:outline-2 focus:outline-offset-2 focus:outline-indigo-500"
-                >
-                  <span className="sr-only">View notifications</span>
-                  <BellIcon className="h-6 w-6" aria-hidden="true" />
-                </button>
-
-                {/* Profile dropdown */}
-                <Menu as="div" className="relative ml-3">
-                  <MenuButton className="flex rounded-full focus:outline-2 focus:outline-offset-2 focus:outline-indigo-500">
-                    <span className="sr-only">Open user menu</span>
-                    <img
-                      src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                      alt=""
-                      className="h-8 w-8 rounded-full"
-                    />
-                  </MenuButton>
-                  <MenuItems className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                    <MenuItem>
-                      {({ active }) => (
-                        <a
-                          href="#"
-                          className={classNames(
-                            active ? 'bg-gray-100' : '',
-                            'block px-4 py-2 text-sm text-gray-700'
-                          )}
-                        >
-                          Your profile
-                        </a>
-                      )}
-                    </MenuItem>
-                    <MenuItem>
-                      {({ active }) => (
-                        <a
-                          href="#"
-                          className={classNames(
-                            active ? 'bg-gray-100' : '',
-                            'block px-4 py-2 text-sm text-gray-700'
-                          )}
-                        >
-                          Settings
-                        </a>
-                      )}
-                    </MenuItem>
-                    <MenuItem>
-                      {({ active }) => (
-                        <a
-                          href="#"
-                          className={classNames(
-                            active ? 'bg-gray-100' : '',
-                            'block px-4 py-2 text-sm text-gray-700'
-                          )}
-                        >
-                          Sign out
-                        </a>
-                      )}
-                    </MenuItem>
-                  </MenuItems>
-                </Menu>
-              </div>
+              
             </div>
           </div>
 

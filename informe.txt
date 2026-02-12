@@ -96,3 +96,10 @@ Cliente: solo puede ver sus pedidos y realizar compras.
 Repartidor: solo ve pedidos asignados y actualiza estado de entrega.
 
 Administrador: puede gestionar productos, stock, pedidos, pagos, usuarios y generar reportes.
+
+
+
+
+
+
+

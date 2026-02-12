@@ -25,7 +25,7 @@ useEffect(()=>{
   return (
 
 
-                <div className=" h-[80vh] grid grid-cols-1 sm:grid-cols-2 gap-8  overflow-y-auto bg-white shadow-xl">
+                <div className=" h-[80vh] grid grid-cols-1 sm:grid-cols-[2fr_1fr] gap-8  overflow-y-auto bg-white shadow-xl">
                   <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
                     <div className="flex items-start justify-between">
                       <h3 className="text-lg font-medium text-gray-900">Shopping cart</h3>

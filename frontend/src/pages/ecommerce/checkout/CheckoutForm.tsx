@@ -8,15 +8,6 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import React, { useEffect, useState } from "react";
-import {
-  CardNumberElement,
-  CardExpiryElement,
-  CardCvcElement,
-  Elements,
-  useStripe,
- // useElements,
-} from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
 import { calculateTotal } from "@/services/OrderDetail";
 import {  DialogDescription } from "@radix-ui/react-dialog";
 import { FieldLabel } from "@/components/ui/field";
@@ -24,14 +15,11 @@ import type { Address, OrderDetail } from "@/types";
 import { getAddressesByUserId } from "@/services/AddressService";
 import { Textarea } from "@/components/ui/textarea";
 
-// Stripe pública
-const stripePromise = loadStripe("pk_test_TYooMQauvdEDq54NiTphI7jx");
-
-const CheckoutFormInner = () => {
+export default function CheckoutForm() {
   const [addressSelected , setAddressSelected] = useState<number|null>(null);
-
-  const stripe = useStripe();
- // const elements = useElements();
+  const [cardNumber, setCardNumber] = useState("");
+  const [cardExpiry, setCardExpiry] = useState("");
+  const [cardCvc, setCardCvc] = useState("");
 
     const [addresses , setAddresses] = useState<Address[]>([]);
    async function fetchAddresses() {
@@ -42,7 +30,7 @@ const CheckoutFormInner = () => {
     fetchAddresses();
    },[])
 
-  const sendPaymentData = async () => {
+  async function sendPaymentData() {
     if (!addressSelected) {
       alert("Please select a delivery address");
       return;
@@ -61,7 +49,7 @@ const CheckoutFormInner = () => {
       
       const orderTransaction = {
         paymentMethod: 'card',
-        details: JSON.stringify(detailsForSP),
+        details: detailsForSP,
         order: {
           user: {
             userId: account.userId
@@ -120,7 +108,7 @@ const CheckoutFormInner = () => {
           
           {addresses.map((address) => (
             <SelectItem  key={address.addressId} value={address.addressId!.toString()}>
-                <p>{address.addressId}</p>
+                <p>Direction: {address.addressId}</p>
 
             </SelectItem>
         
@@ -148,42 +136,52 @@ const CheckoutFormInner = () => {
         <div>
       
         <label className="block text-sm font-medium text-gray-700 mb-1">Card Number</label>
-        <div className="border rounded-md p-3 bg-white">
-          <CardNumberElement options={{ showIcon: true, }} />
-        </div>
+        <input
+          type="text"
+          inputMode="numeric"
+          autoComplete="cc-number"
+          placeholder="1234 5678 9012 3456"
+          value={cardNumber}
+          onChange={(event) => setCardNumber(event.target.value)}
+          className="w-full border rounded-md p-3 bg-white"
+        />
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Expiration Date</label>
-          <div className="border rounded-md p-3 bg-white">
-            <CardExpiryElement />
-          </div>
+          <input
+            type="text"
+            inputMode="numeric"
+            autoComplete="cc-exp"
+            placeholder="MM / YY"
+            value={cardExpiry}
+            onChange={(event) => setCardExpiry(event.target.value)}
+            className="w-full border rounded-md p-3 bg-white"
+          />
         </div>
         <div>
           <FieldLabel className="block text-sm font-medium text-gray-700 mb-1">CVC</FieldLabel>
-          <div className="border rounded-md p-3 bg-white">
-            <CardCvcElement  />
-          </div>
+          <input
+            type="text"
+            inputMode="numeric"
+            autoComplete="cc-csc"
+            placeholder="123"
+            value={cardCvc}
+            onChange={(event) => setCardCvc(event.target.value)}
+            className="w-full border rounded-md p-3 bg-white"
+          />
         </div>
       </div>
 
       <button
         type="button"
         onClick={sendPaymentData}
-        disabled={!stripe}
-        className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 disabled:bg-gray-400"
+        disabled={!cardNumber || !cardExpiry || !cardCvc}
+        className="w-full cursor-pointer bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 disabled:bg-gray-400"
       >
         Pay now
       </button>
     </div>
   );
 };
-
-export default function CheckoutForm() {
-  return (
-    <Elements stripe={stripePromise}>
-      <CheckoutFormInner />
-    </Elements>
-  );
-}

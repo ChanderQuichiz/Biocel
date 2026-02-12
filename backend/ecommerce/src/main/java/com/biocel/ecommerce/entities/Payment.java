@@ -46,5 +46,4 @@ public class Payment {
     @Enumerated(EnumType.STRING)
     @Column(name = "status", length = 20)
     private Status status = Status.pending;
-
 }

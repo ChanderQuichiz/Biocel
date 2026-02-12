@@ -64,16 +64,8 @@ const data = {
       icon: Dock,
     },
     
-    {
-      name: "Deliveries",
-      url: "/dashboard/deliveries",
-      icon: Map,
-    },
-    {
-      name: "Payments",
-      url: "/dashboard/payments",
-      icon: Landmark,
-    },
+  
+    
         {
       name: "Users",
       url: "/dashboard/users",

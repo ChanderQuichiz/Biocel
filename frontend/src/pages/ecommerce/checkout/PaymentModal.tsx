@@ -15,7 +15,7 @@ export function PaymentModal() {
     <Dialog>
       <form>
         <DialogTrigger asChild>
-          <button onClick={verifyAccount} className="rounded-[5px] w-[60%] py-2 bg-purple-600 text-white cursor-pointer ">Checkout</button>
+          <button onClick={verifyAccount} className="rounded-[5px] w-full py-2 bg-purple-600 text-white cursor-pointer ">Checkout</button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
 <CheckoutForm/>

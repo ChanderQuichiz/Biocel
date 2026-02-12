@@ -10,6 +10,7 @@ import { SignIn } from "./pages/ecommerce/signin/SignIn";
 import { SignUp } from "./pages/ecommerce/signup/SignUp";
 import { Routes, Route } from "react-router-dom";
 import Search from "./pages/ecommerce/search/Search";
+import { Orders } from "./pages/ecommerce/orders/Orders";
 export default function App() {
   return (
   <Routes>
@@ -17,6 +18,7 @@ export default function App() {
       <Route path={"/search/:text"} element={<Search/>}/>
       <Route path={"/home/:page"} element={<Home/>}/>
       <Route index element={<Home/>}/>
+      <Route path="orders" element={<Orders/>}/>
       <Route path="checkout" element={<Checkout/>}/>
       <Route path="account" element={<Account/>}>
           <Route path="userinfo" element={<UserInfo/>}/>
