@@ -290,9 +290,9 @@ export function Products() {
   })
 
   return (
-    <div className="w-full">
-      <div className="font-sans text-2xl font-bold text-gray-400">Welcome maintenance products</div>
-      <div className="flex items-center py-4">
+    <div className="w-full ">
+      <div className="font-serif text-2xl font-bold text-neutral-600 mt-4">Maintenance products</div>
+      <div className="flex flex-col sm:flex-row  sm:items-center py-4">
         <Input
           placeholder="Filter by name..."
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
@@ -322,7 +322,7 @@ export function Products() {
           }}
         >
           <DialogTrigger asChild>
-            <button className="rounded-[5px] m-10 w-[20%] py-2 bg-purple-600 text-white cursor-pointer ">
+            <button className="rounded-[5px] m-10 max-w-[90vw] p-2 bg-purple-600 text-white cursor-pointer ">
               New Product
             </button>
           </DialogTrigger>

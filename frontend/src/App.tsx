@@ -11,6 +11,7 @@ import { SignUp } from "./pages/ecommerce/signup/SignUp";
 import { Routes, Route } from "react-router-dom";
 import Search from "./pages/ecommerce/search/Search";
 import { Orders } from "./pages/ecommerce/orders/Orders";
+import { OrderMaintenance  } from "./pages/dashboard/orders/OrderMaintenance";
 export default function App() {
   return (
   <Routes>
@@ -27,6 +28,7 @@ export default function App() {
       </Route>
     </Route>
     <Route path="dashboard" element={<Dashboard/>}>
+        <Route path="orders" element={<OrderMaintenance/>}/>
         <Route path="account" element={<UserInfo/>}/>
         <Route path="products" element={<Products/>}/>
         <Route index element={<Reports/>}/>

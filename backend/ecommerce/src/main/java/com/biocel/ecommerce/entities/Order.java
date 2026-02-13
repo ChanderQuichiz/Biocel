@@ -28,7 +28,7 @@ public class Order {
     private User user;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", length = 30)
+    @Column(name = "status", length = 30, insertable = false)
     private Status status = Status.pending;
 
     @Enumerated(EnumType.STRING)

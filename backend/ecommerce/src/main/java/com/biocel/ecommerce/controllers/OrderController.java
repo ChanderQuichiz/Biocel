@@ -49,9 +49,20 @@ public class OrderController {
     @GetMapping("/search")
     public ResponseEntity<Page<Order>> search(@And({
         @Spec(path = "user.userId", spec = Equal.class),
-        @Spec(path = "status", spec = Equal.class)
+        @Spec(path = "status", spec = Equal.class),
+        @Spec(path = "orderId", spec = Equal.class)
     })Specification<Order> spec, Pageable pageable) {
         Page<Order> orders = orderRepository.findAll(spec, pageable);
         return new ResponseEntity<>(orders, HttpStatus.OK);
     }
+    @PostMapping("/save")
+    public ResponseEntity<Order> postMethodName(@RequestBody Order entity) {
+        Order valid = orderRepository.save(entity);
+        if(valid == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        
+        return new ResponseEntity<>(valid, HttpStatus.OK);
+    }
+    
 }
