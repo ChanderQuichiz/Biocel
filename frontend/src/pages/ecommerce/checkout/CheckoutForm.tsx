@@ -41,10 +41,12 @@ export default function CheckoutForm() {
       const cartItems = JSON.parse(localStorage.getItem('cart') || '[]');
 
       const detailsForSP = cartItems.map((item: OrderDetail) => ({
-        product_id: item.productId,
+        product: {
+          productId: item.productId,
+        },
         quantity: item.quantity,
         price: item.price,
-        subtotal: item.subtotal
+        subtotal: item.subtotal,
       }));
       
       const orderTransaction = {
@@ -62,7 +64,7 @@ export default function CheckoutForm() {
         }
       };
 
-      const orderResponse = await fetch("http://localhost:8020/order/createorder", {
+      const orderResponse = await fetch("http://localhost:8020/orders/createorder", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(orderTransaction),
