@@ -29,15 +29,24 @@ import { Input } from "@/components/ui/input"
 import type { Order } from "@/types/order"
 import { useEffect, useState } from "react"
 import { saveOrder, searchOrder } from "@/services/OrderService"
-
+import type { OrderDetail } from "@/types"
+ 
+        
 
 export function OrderMaintenance() {
     const [orders, setOrders] = useState<Order[] | null>(null);
     const [search , setSearch] = useState<string>('');
+    const [orderDetails, setOrderDetails] = useState<OrderDetail[] | null>(null);
    async function loadOrders(filters:string='') {
     const response = await searchOrder(filters);
     setOrders(response);
    }
+   async function loadOrderDetails(orderId:number){
+    const response = await fetch(`http://localhost:8020/orderdetails/search?order.orderId=${orderId}`);
+    const data = await response.json();
+    setOrderDetails(data.content as OrderDetail[]);
+   }
+
    useEffect(()=>{
     // eslint-disable-next-line react-hooks/set-state-in-effect
     loadOrders(search);
@@ -105,38 +114,15 @@ export function OrderMaintenance() {
               <Dialog>
       <form>
         <DialogTrigger asChild>
-          <Button variant="outline">View details</Button>
+          <Button variant="outline" onClick={()=>{
+            loadOrderDetails(order.orderId as number)
+          }} >View details</Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-sm">
-          <DialogHeader>
-            <DialogTitle>Order Details</DialogTitle>
-            <DialogDescription>
-              Make changes to your profile here. Click save when you&apos;re
-              done.
-            </DialogDescription>
-          </DialogHeader>
-          {/*orderSelected && orderSelected.length > 0 && (
-        <div className="bg-white m-auto w-[80%] flex flex-col gap-4 p-4 border-2 border-neutral-300">
-            <div className="grid grid-cols-4 border-b-2 border-neutral-300 pb-4
-             ">
-                <div className="flex flex-col">
-                    <div className="font-semibold">Creation Date:</div>
-                    <div>{orderSelected[0].createdAt}</div>
-                </div>
-                 <div className="flex flex-col">
-                    <div className="font-semibold">Order placed:</div>
-                    <div>{orderSelected[0].estimatedDelivery}</div>
-                </div>
-                 <div className="flex flex-col">
-                    <div className="font-semibold">Total:</div>
-                    <div>${orderSelected[0].total}</div>
-                </div>
-                          <div className="flex flex-col">
-                    <div className="font-semibold">Status:</div>
-                    <div>{orderSelected[0].status}</div>
-                </div>
-            </div>
-            {ordersDetails?.map(detail=>
+        <DialogHeader>
+          <DialogTitle>Order details: NO-{order.orderId} </DialogTitle>
+        </DialogHeader>
+          {orderDetails?.map(detail=>
                (
                     <div key={detail.orderDetailId} className="flex flex-row py-2 ">
         
@@ -171,8 +157,7 @@ export function OrderMaintenance() {
         </div>
                 )
                 )}
-        
-        </div>)*/}
+          
         </DialogContent>
       </form>
     </Dialog>

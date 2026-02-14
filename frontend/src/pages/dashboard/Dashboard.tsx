@@ -13,9 +13,29 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
-import { Outlet } from "react-router-dom"
+import {  useEffect } from "react"
+import { Outlet, useNavigate } from "react-router-dom"
 
 export default function Dashboard() {
+ const navigate = useNavigate();
+  function checkAccess(){
+    
+          const password = window.prompt("Enter password:");
+          if(password === "cibertec"){
+            localStorage.setItem("access", "true");
+          } else {
+            navigate("/");
+          }
+    }
+  
+
+  useEffect(()=>{
+    if(!JSON.parse(localStorage.getItem("access") || "false")){
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    checkAccess();
+    
+    }
+  },[])
   return (
     <SidebarProvider>
       <AppSidebar />
