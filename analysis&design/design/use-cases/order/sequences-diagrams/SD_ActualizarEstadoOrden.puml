@@ -1,0 +1,18 @@
+@startuml title Diagrama de Secuencia - Actualizar Estado de Orden
+actor repartidor
+participant "OrderController" as OC
+participant "OrderService" as OS
+participant "OrderRepository" as OR
+repartidor -> OC: actualizarEstadoOrden(order)
+activate OC
+OC -> OS: actualizarEstadoOrden(order)
+activate OS
+OS -> OR: save(order)
+activate OR
+OR --> OS: return ordenActualizada
+deactivate OR
+OS --> OC: return ordenActualizada
+deactivate OS
+OC --> repartidor: mostrarMensaje("Estado de orden actualizado")
+deactivate OC
+@enduml

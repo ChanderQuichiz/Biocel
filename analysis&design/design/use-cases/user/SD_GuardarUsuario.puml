@@ -1,0 +1,17 @@
+@startuml title Diagrama de Secuencia - Guardar Usuario
+actor cliente
+participant "UserController" as UC
+participant "UserService" as US
+participant "UserRepository" as UR
+cliente -> UC: enviarDatosUsuario(user)
+activate UC
+UC -> US: guardarUsuario(user)
+activate US
+US -> UR: save(user)
+activate UR
+UR --> US: return usuario
+deactivate UR
+US --> UC: return usuario
+deactivate US
+UC --> cliente: mostrarMensaje("se guardo correctamente")
+@enduml

@@ -1,0 +1,86 @@
+BIOCEL ECOMMERCE – DOCUMENTACIÓN PROFESIONAL
+1. ANTECEDENTES
+
+Biocel es una microempresa peruana ubicada en Lima, distrito de Miraflores, dedicada a la venta de dispositivos móviles.
+
+Debido a sus bajas ventas, la empresa ha decidido desarrollar una aplicación web en línea para mejorar sus ventas y optimizar la gestión de pedidos.
+
+2. PROCESO DE VENTAS PARA EL CLIENTE
+
+El proceso de compra inicia cuando el cliente ingresa al sitio web, busca un producto y revisa sus especificaciones.
+
+El sistema verifica si el producto está disponible. 
+Si el producto está disponible, se guarda en el carrito. 
+Si no está disponible, se muestra un mensaje indicando “Sin stock” y el proceso finaliza.
+
+Luego, el sistema verifica si el cliente está autenticado. 
+Si no lo está, se valida si ya tiene una cuenta:
+- Si tiene cuenta, debe iniciar sesión.
+- Si no tiene cuenta, debe registrarse guardando sus datos.
+
+Después, el cliente elige el método de entrega. 
+Si selecciona delivery, el sistema consulta la dirección:
+- Si la dirección ya está registrada, continúa el proceso.
+- Si no está registrada, el cliente debe guardarla.
+
+Posteriormente, el cliente selecciona el método de pago y la fecha de entrega.
+
+El sistema valida el stock del producto.
+Si el stock es suficiente:
+- Se validan los datos de pago.
+- Se valida la dirección.
+- Si todas las validaciones son correctas:
+  - Se crea la orden en una transacción única.
+  - Se actualiza el stock automáticamente.
+  - El estado de la orden pasa a “Pendiente”.
+  - Se asigna un repartidor disponible.
+- Si alguna validación falla:
+  - Se realiza un rollback de la transacción.
+  - Se restablece el stock.
+  - Se notifica el error al cliente y el proceso termina.
+
+Si el stock no es suficiente:
+- Se notifica la falta de stock.
+- El administrador actualiza el stock del producto.
+- El sistema confirma que el stock ha sido actualizado.
+
+Luego, el estado de la orden cambia a “En preparación”.
+
+El repartidor recoge el pedido y actualiza el estado a “En reparto”.
+
+Finalmente, se verifica si la entrega fue exitosa:
+- Si fue exitosa, el estado cambia a “Entregado”.
+- Si no fue exitosa, el estado cambia a “Pospuesto”.
+
+El proceso termina.
+
+=======================
+	Reportes
+=======================
+
+La empresa genera reportes periódicos que incluyen:
+
+Productos más vendidos.
+
+Rentabilidad de los productos.
+
+Fechas con mayor venta.
+
+Historial de pagos y entregas.
+
+Cualquier otra información útil para la toma de decisiones.
+
+Roles y permisos
+
+Cliente: solo puede ver sus pedidos y realizar compras.
+
+Repartidor: solo ve pedidos asignados y actualiza estado de entrega.
+
+Administrador: puede gestionar productos, stock, pedidos, pagos, usuarios y generar reportes.
+
+
+
+
+
+
+

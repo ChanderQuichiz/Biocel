@@ -1,0 +1,25 @@
+@startuml title Secuencia - Buscar Producto
+actor cliente
+participant "ProductoController" as PC
+participant "ProductoService" as PS
+participant "ProductoRepository" as PR
+cliente -> PC: buscarProducto(nombre)
+activate PC
+PC -> PS: buscarProducto(nombre)
+activate PS
+PS -> PR: findByName(nombre)
+activate PR
+PR --> PS: return producto
+deactivate PR
+alt producto !== null
+  PS --> PC: productoEncontrado(producto)
+  PC --> cliente: mostrarProducto(productoEncontrado)
+
+else
+  PS --> PC: productoNoEncontrado
+  PC --> cliente: mostrarMensaje("Producto no encontrado")
+end
+
+deactivate PS
+deactivate PC
+@enduml

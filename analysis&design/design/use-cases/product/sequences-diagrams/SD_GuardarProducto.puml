@@ -1,0 +1,18 @@
+@startuml title Diagrama de Secuencia - Actualizar  de Producto
+actor admin
+participant "ProductController" as PC
+participant "ProductService" as PS
+participant "ProductRepository" as PR
+admin -> PC: enviarProducto(order)
+activate PC
+PC -> PS: guardarProducto(order)
+activate PS
+PS -> PR: save(order)
+activate PR
+PR --> PS: return Producto
+deactivate PR
+PS --> PC: return Producto
+deactivate PS
+PC --> admin: mostrarMensaje("Producto actualizada")
+deactivate PC
+@enduml

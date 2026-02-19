@@ -1,0 +1,22 @@
+@startuml title Diagrama de Secuencia - Consultar Direccion
+actor usuario
+participant "AddressController" as OC
+participant "AddressService" as OS
+participant "AddressRepository" as OR
+usuario -> OC: consultarDireccion(specificacion)
+activate OC
+OC -> OS: obtenerDireccion(especificacion)
+activate OS
+OS -> OR: findAll(specificacion)
+activate OR
+OR --> OS: return Addresss
+deactivate OR
+alt Addresss.size() > 0
+  OS --> OC: DireccionesEncontradas(Addresss)
+  OC --> usuario: mostrarDirecciones(DireccionesEncontradas)
+else
+  OS --> OC: DireccionNoEncontrada
+  deactivate OS
+  OC --> usuario: mostrarMensaje("No tienes direcciones registradas")
+end
+@enduml

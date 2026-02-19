@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.biocel.ecommerce.entities.User;
-import com.biocel.ecommerce.repositories.UserRepository;
+import com.biocel.ecommerce.services.UserService;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,10 +23,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 @RequestMapping("/user")
 public class UserController {
     @Autowired
-    UserRepository repository;
+    UserService userService;
+
     @PostMapping("/save")
     public ResponseEntity<User> save(@RequestBody User entity) {
-        User valid = repository.save(entity);
+        User valid = userService.save(entity);
         if(valid != null) {
             return ResponseEntity.ok(valid);
         } else {
@@ -34,8 +35,8 @@ public class UserController {
         }
     }
     @GetMapping("/findbyid/{id}")
-    public ResponseEntity<User> findById(@PathVariable int id) {
-        User user = repository.findById(id).orElse(null);
+    public ResponseEntity<Object> findById(@PathVariable int id) {
+        Object user = userService.findById(id);
         if(user != null) {
             return ResponseEntity.ok(user);
         } else {
@@ -44,7 +45,7 @@ public class UserController {
     }
     @PostMapping("/access")
     public ResponseEntity<User> access(@RequestBody User access) {
-        User user = repository.findByEmailAndPassword(access.getEmail(), access.getPassword());
+        User user = userService.findByEmailAndPassword(access.getEmail(), access.getPassword());
         if(user != null) {
             return ResponseEntity.ok(user);
         } else {

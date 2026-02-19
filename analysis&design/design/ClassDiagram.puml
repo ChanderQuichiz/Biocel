@@ -1,0 +1,63 @@
+@startuml title Diagrama de Clases - E-commerce
+
+class User {
+  userId : int
+  lastName : String
+  firstName : String
+  email : String
+  password : String
+  phone : String
+  role : Role
+  status : Status
+  lastLogin : LocalDateTime
+  createdAt : LocalDateTime
+}
+
+class Address {
+  addressId : int
+  address : String
+  city : String
+  district : String
+  postalCode : String
+  phone : String
+  addressType : AddressType
+  createdAt : LocalDateTime
+  updatedAt : LocalDateTime
+}
+class Order {
+  orderId : int
+  status : OrderStatus
+  deliveryMethod : DeliveryMethod
+  total : BigDecimal
+  discount : BigDecimal
+  estimatedDelivery : LocalDateTime
+  createdAt : LocalDateTime
+}
+
+class Product {
+  productId : int
+  name : String
+  brand : String
+  category : String
+  description : String
+  imageUrl : String
+  price : BigDecimal
+  stock : int
+  createdAt : LocalDateTime
+  updatedAt : LocalDateTime
+}
+
+class OrderDetail {
+  orderDetailId : int
+  quantity : int
+  price : BigDecimal
+  subtotal : BigDecimal
+}
+
+User "1" -- "0..*" Order :solicita
+User "1" -- "0..*" Address:tiene
+Order "1" -- "1..*" OrderDetail : contiene
+OrderDetail "1" -- "1" Product : referencia
+Order "1" -- "1" Address :entrega
+
+@enduml

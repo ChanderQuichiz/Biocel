@@ -1,6 +1,7 @@
 package com.biocel.ecommerce.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -21,6 +22,28 @@ public class ProductService {
         Pageable pageable = PageRequest.of(page-1, size);
         Page<Product> productPage = productRepository.findAll(pageable);
         return productPage.getContent();
+    }
+
+    public Product save(Product entity) {
+        return productRepository.save(entity);
+    }
+
+    public List<Product> findAllById(List<Integer> ids) {
+        return productRepository.findAllById(ids);}
+
+    public double count() {
+        return productRepository.count();
+    }
+
+    public void deleteById(int id) {
+        productRepository.deleteById(id);}
+
+    public List<Product> searchProducts(String text) {
+        return productRepository.searchProducts(text);
+    }
+
+    public Optional<Product> findByIdForUpdate(Integer productId) {
+        return productRepository.findByIdForUpdate(productId);
     }
 
 }

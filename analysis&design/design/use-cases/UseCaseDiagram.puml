@@ -1,0 +1,36 @@
+@startuml title Diagrama de Casos de Uso - E-commerce
+left to right direction
+
+actor Cliente
+actor Repartidor
+actor Admin
+
+rectangle "Sistema Biocel" {
+
+  (Buscar producto) as UC1
+  (Guardar producto) as UC2
+  (Consultar orden) as UC3
+  (Crear orden) as UC4
+  (Guardar carrito) as UC5
+  (Actualizar estado de orden) as UC6
+  (Guardar usuario) as UC7
+  (Iniciar sesion) as UC8
+  (Cerrar sesion) as UC9
+  (Consultar direccion) as UC10
+  (Guardar direccion) as UC11
+}
+
+Cliente --> UC1
+Cliente --> UC3
+Cliente --> UC4
+Cliente --> UC5
+Cliente --> UC7
+Cliente --> UC8
+Cliente --> UC9
+Cliente --> UC10
+Cliente --> UC11
+
+Repartidor --> UC6
+Admin --> UC2
+
+@enduml

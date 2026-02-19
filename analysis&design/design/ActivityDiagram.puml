@@ -1,0 +1,77 @@
+@startuml title Diagrama de Actividad - Proceso de Compra
+|Cliente|
+start
+:Ingresar al sitio;
+:Buscar producto;
+:Revisar especificaciones;
+
+if (¿Producto disponible?) then (Sí)
+  :Guardar carrito;
+else (No)
+  :Ver mensaje "Sin stock";
+  stop
+endif
+
+if (¿Autenticado?) then (Sí)
+else (No)
+  if (¿Tiene cuenta?) then (Sí)
+    :Iniciar sesion;
+  else (No)
+    :Guardar usuario;
+  endif
+endif
+
+:Elegir método de entrega;
+
+if (¿Delivery?) then (Sí)
+  :Consultar direccion;
+  if (¿Direccion registrada?) then (Sí)
+  else (No)
+    :Guardar direccion;
+  endif
+endif
+
+:Seleccionar método de pago;
+:Seleccionar fecha de entrega;
+
+|Sistema|
+:Validar stock;
+
+if (¿Stock suficiente?) then (Sí)
+  :Validar datos de pago;
+  :Validar dirección;
+
+  if (¿Validaciones correctas?) then (Sí)
+    :Crear orden (Transaccion unica);
+    :Actualizar stock automáticamente;
+    :Estado = Pendiente;
+    :Asignar repartidor disponible;
+  else (No)
+    :Rollback de transacción;
+    :Restablecer stock;
+    :Notificar error al cliente;
+    stop
+  endif
+
+else (No)
+  :Notificar stock insuficiente;
+  |Admin|
+  :Actualizar stock del producto;
+  |Sistema|
+  :Stock actualizado;
+endif
+
+:Actualizar estado de orden = En preparacion;
+
+|Repartidor|
+:Recoger pedido;
+:Actualizar estado de orden = En reparto;
+
+if (¿Entrega exitosa?) then (Sí)
+  :Actualizar estado de orden = Entregado;
+else (No)
+  :Actualizar estado de orden = Pospuesto;
+endif
+
+stop
+@enduml

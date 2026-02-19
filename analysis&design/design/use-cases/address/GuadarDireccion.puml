@@ -1,0 +1,18 @@
+@startuml title Diagrama de Secuencia - Actualizar  de direccion
+actor cliente
+participant "AddressController" as AC
+participant "AddressService" as AS
+participant "AddressRepository" as AR
+cliente -> AC: enviarDireccion(order)
+activate AC
+AC -> AS: guardarDireccion(order)
+activate AS
+AS -> AR: save(order)
+activate AR
+AR --> AS: return direccion
+deactivate AR
+AS --> AC: return direccion
+deactivate AS
+AC --> cliente: mostrarMensaje("Direccion actualizada")
+deactivate AC
+@enduml

@@ -1,0 +1,24 @@
+@startuml title Diagrama de Secuencia - Iniciar Sesión
+actor cliente
+participant "UserController" as UC
+participant "UserService" as US
+participant "UserRepository" as UR
+cliente -> UC: enviaCredenciales(email, password)
+activate UC
+UC -> US: iniciarSesion(email, password)
+activate US
+US -> UR: findByEmailAndPassword(email, password)
+activate UR
+UR --> US: return usuario
+deactivate UR
+alt usuario !== null
+  US --> UC: usuarioEncontrado(usuario)
+  
+  UC --> cliente: crearSesion(usuarioEncontrado)
+
+else
+  US --> UC: usuarioNoEncontrado
+  deactivate US
+  UC --> cliente: mostrarMensaje("Credenciales incorrectas")
+end
+@enduml

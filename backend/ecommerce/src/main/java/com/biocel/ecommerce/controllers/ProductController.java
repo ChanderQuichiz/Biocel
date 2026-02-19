@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.biocel.ecommerce.entities.Product;
-import com.biocel.ecommerce.repositories.ProductRepository;
 import com.biocel.ecommerce.services.ProductService;
 
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,13 +26,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 @CrossOrigin    
 @RequestMapping("/product")
 public class ProductController {
-    @Autowired
-    ProductRepository productRepository;
+   
     @Autowired
     private ProductService productService;
+
     @PostMapping("/save")
     public ResponseEntity<Product> save(@RequestBody Product entity) {
-        Product valid = productRepository.save(entity);
+        Product valid = productService.save(entity);
         if(valid != null) {
             return ResponseEntity.ok(valid);
         } else {
@@ -42,7 +41,7 @@ public class ProductController {
     }
     @PostMapping("/findallbyid")
     public ResponseEntity<List<Product>> findbyid( @RequestBody List<Integer> ids) {
-        List<Product> products = productRepository.findAllById(ids);
+        List<Product> products = productService.findAllById(ids);
         return ResponseEntity.ok(products);
         }
     
@@ -53,17 +52,17 @@ public class ProductController {
         }
     @GetMapping("/pagenumber")
 public ResponseEntity<Long> getPageNumber() {
-    long totalPages = (long) Math.ceil(productRepository.count() / 10.0);
+    long totalPages = (long) Math.ceil(productService.count() / 10.0);
     return ResponseEntity.ok(totalPages);
 }
 @DeleteMapping("/delete/{id}")
 public ResponseEntity<Void> delete(@PathVariable int id) {
-    productRepository.deleteById(id);
+    productService.deleteById(id);
     return ResponseEntity.ok().build();
 }
 @GetMapping("/searchproductsbytext/{text}")
 public ResponseEntity<List<Product>> searchProductsBytext(@PathVariable String text) {
-    List<Product> products = productRepository.searchProducts(text);
+    List<Product> products = productService.searchProducts(text);
     return ResponseEntity.ok(products);
 }
 

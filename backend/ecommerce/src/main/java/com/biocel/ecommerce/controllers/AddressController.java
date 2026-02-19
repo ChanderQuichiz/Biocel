@@ -12,7 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.biocel.ecommerce.entities.Address;
-import com.biocel.ecommerce.repositories.AddressRepository;
+import com.biocel.ecommerce.services.AddressService;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -23,11 +24,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class AddressController {
 
     @Autowired
-    private AddressRepository addressRepository;
+    private AddressService addressService;
     
     @PostMapping("/save")
-    public ResponseEntity<Address> postMethodName(@RequestBody Address address) {
-        Address valid = addressRepository.save(address);
+    public ResponseEntity<Address> save(@RequestBody Address address) {
+        Address valid = addressService.save(address);
         if(valid == null) {
             return ResponseEntity.status(500).build();
         }
@@ -35,7 +36,7 @@ public class AddressController {
     }
     @GetMapping("/findallbyuser/{userId}")
     public ResponseEntity<List<Address>> findAllByUser(@PathVariable Integer userId) {
-        List<Address> found = addressRepository.findAllByUser_userId(userId);
+        List<Address> found = addressService.findAllByUser(userId);
         if(found == null) {
             return ResponseEntity.status(500).build();
         }
@@ -43,7 +44,7 @@ public class AddressController {
     }
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> delete(@PathVariable int id) {
-        addressRepository.deleteById(id);
+        addressService.delete(id);
         return ResponseEntity.ok().build();
     }
 }

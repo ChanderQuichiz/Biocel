@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.biocel.ecommerce.entities.Order;
 import com.biocel.ecommerce.entities.OrderTransaction;
-import com.biocel.ecommerce.repositories.OrderRepository;
 import com.biocel.ecommerce.services.OrderService;
 
 import net.kaczmarzyk.spring.data.jpa.domain.Equal;
@@ -30,8 +29,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @RestController
 public class OrderController {
 
-  @Autowired
-    private OrderRepository orderRepository;
+  
 
     @Autowired
     private OrderService orderService;
@@ -52,12 +50,12 @@ public class OrderController {
         @Spec(path = "status", spec = Equal.class),
         @Spec(path = "orderId", spec = Equal.class)
     })Specification<Order> spec, Pageable pageable) {
-        Page<Order> orders = orderRepository.findAll(spec, pageable);
+        Page<Order> orders = orderService.findAll(spec, pageable);
         return new ResponseEntity<>(orders, HttpStatus.OK);
     }
     @PostMapping("/save")
     public ResponseEntity<Order> postMethodName(@RequestBody Order entity) {
-        Order valid = orderRepository.save(entity);
+        Order valid = orderService.save(entity);
         if(valid == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

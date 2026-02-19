@@ -1,0 +1,13 @@
+@startuml title Diagrama de Secuencia - Guardar Carrito
+actor admin
+participant cart
+admin -> cart :guardarCarrito(productoID,cantidad)
+activate cart
+alt producto existe en carrito
+cart -> cart :actualizarCantidad(cantidad)
+else producto no existe en carrito
+cart -> cart :agregarProducto(productoID,cantidad)
+end
+cart --> admin :mostrarMensaje("Carrito actualizado")
+deactivate cart
+@enduml

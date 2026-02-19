@@ -1,0 +1,38 @@
+@startuml title Crear Orden
+actor cliente
+participant OrderController
+participant OrderService
+participant OrderRepository
+participant ProductService
+participant OrderDetailService
+participant Product
+cliente -> OrderController:enviarOrden(order)
+activate OrderController
+OrderController -> OrderService:crearOrder(order)
+activate OrderService
+OrderService -> OrderRepository:guardarOrden(order)
+OrderRepository -> OrderService:return ordenGuardada
+loop cada detail de order.details
+OrderService -> ProductService:buscarProducto(detail.productId)
+activate ProductService
+ProductService -> OrderService:return producto
+deactivate ProductService
+    alt producto.stock >= detail.quantity
+    OrderService -> cliente :error("stock insuficiente")
+    end
+OrderService -> Product:setStock(product.stock - detail.quantity)
+OrderService -> OrderDetail :setOrder(OrdenGuardada)
+OrderService -> OrderDetailService:guardarOrderDetail(detail)
+end
+alt orden valida
+OrderService -> OrderController : SI
+
+OrderController -> cliente : no se puedo crear la orden
+else
+OrderService ->OrderController : NO
+deactivate OrderService
+OrderController -> cliente : orden creada
+deactivate OrderController
+end
+
+@enduml

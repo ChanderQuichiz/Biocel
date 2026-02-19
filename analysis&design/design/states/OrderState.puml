@@ -1,0 +1,16 @@
+@startuml title Diagrama de Estados - Pedido
+
+[*] --> PENDING : Pedido creado
+
+PENDING --> PREPARING : Sistema procesa pedido
+
+PREPARING --> OUT_FOR_DELIVERY : Pedido listo para envío
+PREPARING --> POSTPONED : Cliente solicita cambio / problema
+
+OUT_FOR_DELIVERY --> DELIVERED : Entrega exitosa
+OUT_FOR_DELIVERY --> POSTPONED : Problema en entrega
+
+DELIVERED --> [*]
+POSTPONED --> [*]
+
+@enduml

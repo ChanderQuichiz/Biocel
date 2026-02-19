@@ -1,0 +1,22 @@
+@startuml title Diagrama de Secuencia - Consultar Orden
+actor usuario
+participant "OrderController" as OC
+participant "OrderService" as OS
+participant "OrderRepository" as OR
+usuario -> OC: consultarOrden(specificacion)
+activate OC
+OC -> OS: obtenerOrden(especificacion)
+activate OS
+OS -> OR: findAll(specificacion)
+activate OR
+OR --> OS: return orders
+deactivate OR
+alt orders.size() > 0
+  OS --> OC: ordenesEncontradas(orders)
+  OC --> usuario: mostrarOrdenes(ordenesEncontradas)
+else
+  OS --> OC: ordenNoEncontrada
+  deactivate OS
+  OC --> usuario: mostrarMensaje("No se encontraron órdenes")
+end
+@enduml

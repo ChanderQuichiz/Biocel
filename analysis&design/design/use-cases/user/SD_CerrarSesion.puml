@@ -1,0 +1,9 @@
+@startuml title Diagrama de Secuencia - Cerrar sesion
+actor cliente
+participant sesion
+cliente -> sesion: cerrarSesion()
+activate sesion
+sesion -> sesion: removerSesion()
+sesion --> cliente: redireccionar("pagina de inicio")
+deactivate sesion
+@enduml
