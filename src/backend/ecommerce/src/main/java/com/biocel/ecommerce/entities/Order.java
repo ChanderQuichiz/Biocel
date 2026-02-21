@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import jakarta.persistence.*;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
@@ -39,16 +38,16 @@ public class Order {
     @JoinColumn(name = "address_id")
     private Address address;
 
-    @Column(name = "total", nullable = false, precision = 10, scale = 2)
-    private BigDecimal total;
+    @Column(name = "total", nullable = false)
+    private Double total;
 
-    @Column(name = "discount", precision = 10, scale = 2)
-    private BigDecimal discount = BigDecimal.ZERO;
+    @Column(name = "discount")
+    private Double discount = 0.0;
 
     @Column(name = "estimated_delivery")
     private LocalDateTime estimatedDelivery;
 
-    @Column(name = "created_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP", insertable = false, updatable = false)
+    @Column(name = "created_at", insertable = false, updatable = false)
     private LocalDateTime createdAt;
 
 }
