@@ -3,13 +3,14 @@ import type { Order } from "@/types/order";
 import type { OrderDetail, User } from "@/types";
 import { searchOrderDetails } from "@/services/OrderDetail";
 import { searchOrder } from "@/services/OrderService";
+import { Button } from "@/components/ui/button";
+
 export function Orders(){
     const [ordersDetails , setOrdersDetails] = useState<OrderDetail[] | null>(null);
     const [orders , setOrders] = useState<Order[] | null>(null);
     const [orderSelected , setOrderSelected] = useState<Order[] | null>(null);
     const account:User = JSON.parse(localStorage.getItem('account') || '{}');
    
- 
     async function loadOrders() {
         const data = await searchOrder(`?user.userId=${account.userId}`);
         setOrders(data);
@@ -24,6 +25,20 @@ export function Orders(){
         const details = await searchOrderDetails(`?user.userId=${account.userId}&order.orderId=${orderId}`);
         setOrdersDetails(details);
     }
+
+    // ✅ SOLUCIÓN 1: descarga directa (sin fetch) para evitar CORS
+    function downloadOrderPdf(orderId: number) {
+      const url = `http://localhost:8020/orders/${orderId}/pdf`;
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.target = "_blank"; // opcional
+      a.rel = "noreferrer";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    }
+
     useEffect(()=>{
         // eslint-disable-next-line react-hooks/set-state-in-effect
         loadOrders();
@@ -62,6 +77,16 @@ export function Orders(){
                     <div>{orderSelected[0].status}</div>
                 </div>
             </div>
+
+            <div className="flex justify-end">
+              <Button
+                variant="outline"
+                onClick={() => downloadOrderPdf(orderSelected[0].orderId as number)}
+              >
+                Descargar PDF
+              </Button>
+            </div>
+
             {ordersDetails?.map(detail=>
                (
                     <div key={detail.orderDetailId} className="flex flex-row py-2 ">
@@ -69,14 +94,14 @@ export function Orders(){
             
                                      <div></div>
                                           <div className=" size-24 shrink-0 overflow-hidden rounded-md border border-gray-200">
-                                            <img  src={detail.product.imageUrl} className="size-full object-cover" />
+                                            <img  src={detail.product?.imageUrl} className="size-full object-cover" />
                                           </div>
             
                                           <div className="ml-4 flex flex-1 flex-col">
                                             <div>
                                               <div className="flex justify-between text-base font-medium text-gray-900">
                                                 
-                                                     <div className="">{detail.product.name}</div>
+                                                     <div className="">{detail.product?.name}</div>
                                                
                                                   
                                                 <p className="ml-4">${detail.subtotal}</p>

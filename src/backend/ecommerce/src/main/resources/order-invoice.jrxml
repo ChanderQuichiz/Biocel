@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports
+                http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="order-invoice"
+              pageWidth="595" pageHeight="842"
+              columnWidth="555"
+              leftMargin="20" rightMargin="20"
+              topMargin="20" bottomMargin="20"
+              whenNoDataType="AllSectionsNoDetail">
+
+    <parameter name="orderId"        class="java.lang.Integer"/>
+    <parameter name="createdAt"      class="java.lang.String"/>
+    <parameter name="status"         class="java.lang.String"/>
+    <parameter name="deliveryMethod" class="java.lang.String"/>
+    <parameter name="total"          class="java.lang.String"/>
+    <parameter name="totalItems"     class="java.lang.Integer"/>
+    <parameter name="moneda"         class="java.lang.String"/>
+
+    <field name="name"              class="java.lang.String"/>
+    <field name="quantity"          class="java.lang.Integer"/>
+    <field name="priceFormatted"    class="java.lang.String"/>
+    <field name="subtotalFormatted" class="java.lang.String"/>
+
+    <title>
+        <band height="242" splitType="Stretch">
+
+            <rectangle>
+                <reportElement x="0" y="0" width="555" height="80"
+                               forecolor="#D2D6DC" backcolor="#FAFAFC" mode="Opaque"/>
+                <graphicElement><pen lineWidth="0.5"/></graphicElement>
+            </rectangle>
+            <rectangle>
+                <reportElement x="0" y="0" width="8" height="80"
+                               forecolor="#1E5291" backcolor="#1E5291" mode="Opaque"/>
+                <graphicElement><pen lineWidth="0.0"/></graphicElement>
+            </rectangle>
+            <staticText>
+                <reportElement x="20" y="16" width="320" height="30" forecolor="#282828"/>
+                <textElement verticalAlignment="Middle">
+                    <font fontName="SansSerif" size="18" isBold="true"/>
+                </textElement>
+                <text><![CDATA[BIOCEL - BOLETA DE COMPRA]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="20" y="50" width="320" height="16" forecolor="#6C7586"/>
+                <textElement>
+                    <font fontName="SansSerif" size="9"/>
+                </textElement>
+                <text><![CDATA[Comprobante generado por el sistema]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="340" y="16" width="205" height="30" forecolor="#282828"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font fontName="SansSerif" size="14" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA["Orden #" + $P{orderId}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="340" y="50" width="205" height="16" forecolor="#6C7586"/>
+                <textElement textAlignment="Right">
+                    <font fontName="SansSerif" size="9"/>
+                </textElement>
+                <text><![CDATA[Boleta de compra]]></text>
+            </staticText>
+
+            <rectangle>
+                <reportElement x="0" y="96" width="555" height="130"
+                               forecolor="#D2D6DC" backcolor="#FAFAFC" mode="Opaque"/>
+                <graphicElement><pen lineWidth="0.5"/></graphicElement>
+            </rectangle>
+
+            <staticText>
+                <reportElement x="20" y="114" width="80" height="14" forecolor="#6C7586"/>
+                <textElement><font fontName="SansSerif" size="9" isBold="true"/></textElement>
+                <text><![CDATA[Fecha:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="20" y="153" width="80" height="14" forecolor="#6C7586"/>
+                <textElement><font fontName="SansSerif" size="9" isBold="true"/></textElement>
+                <text><![CDATA[Estado:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="20" y="192" width="80" height="14" forecolor="#6C7586"/>
+                <textElement><font fontName="SansSerif" size="9" isBold="true"/></textElement>
+                <text><![CDATA[Método:]]></text>
+            </staticText>
+
+            <textField>
+                <reportElement x="110" y="114" width="160" height="14" forecolor="#282828"/>
+                <textElement><font fontName="SansSerif" size="9"/></textElement>
+                <textFieldExpression><![CDATA[$P{createdAt}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="110" y="153" width="160" height="14" forecolor="#282828"/>
+                <textElement><font fontName="SansSerif" size="9"/></textElement>
+                <textFieldExpression><![CDATA[$P{status}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="110" y="192" width="160" height="14" forecolor="#282828"/>
+                <textElement><font fontName="SansSerif" size="9"/></textElement>
+                <textFieldExpression><![CDATA[$P{deliveryMethod}]]></textFieldExpression>
+            </textField>
+
+            <staticText>
+                <reportElement x="295" y="114" width="80" height="14" forecolor="#6C7586"/>
+                <textElement><font fontName="SansSerif" size="9" isBold="true"/></textElement>
+                <text><![CDATA[Moneda:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="295" y="153" width="80" height="14" forecolor="#6C7586"/>
+                <textElement><font fontName="SansSerif" size="9" isBold="true"/></textElement>
+                <text><![CDATA[Ítems:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="295" y="192" width="80" height="14" forecolor="#6C7586"/>
+                <textElement><font fontName="SansSerif" size="9" isBold="true"/></textElement>
+                <text><![CDATA[Total:]]></text>
+            </staticText>
+
+            <textField>
+                <reportElement x="390" y="114" width="155" height="14" forecolor="#282828"/>
+                <textElement><font fontName="SansSerif" size="9"/></textElement>
+                <textFieldExpression><![CDATA[$P{moneda}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="390" y="153" width="155" height="14" forecolor="#282828"/>
+                <textElement><font fontName="SansSerif" size="9"/></textElement>
+                <textFieldExpression><![CDATA[String.valueOf($P{totalItems})]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="390" y="192" width="155" height="14" forecolor="#282828"/>
+                <textElement><font fontName="SansSerif" size="9" isBold="true"/></textElement>
+                <textFieldExpression><![CDATA[$P{total}]]></textFieldExpression>
+            </textField>
+
+        </band>
+    </title>
+
+    <columnHeader>
+        <band height="32" splitType="Stretch">
+            <rectangle>
+                <reportElement x="0" y="0" width="555" height="32"
+                               forecolor="#D2D6DC" backcolor="#EEF1F6" mode="Opaque"/>
+                <graphicElement><pen lineWidth="0.5"/></graphicElement>
+            </rectangle>
+            <rectangle>
+                <reportElement x="330" y="0" width="1" height="32"
+                               forecolor="#D2D6DC" backcolor="#D2D6DC" mode="Opaque"/>
+                <graphicElement><pen lineWidth="0.0"/></graphicElement>
+            </rectangle>
+            <rectangle>
+                <reportElement x="390" y="0" width="1" height="32"
+                               forecolor="#D2D6DC" backcolor="#D2D6DC" mode="Opaque"/>
+                <graphicElement><pen lineWidth="0.0"/></graphicElement>
+            </rectangle>
+            <rectangle>
+                <reportElement x="485" y="0" width="1" height="32"
+                               forecolor="#D2D6DC" backcolor="#D2D6DC" mode="Opaque"/>
+                <graphicElement><pen lineWidth="0.0"/></graphicElement>
+            </rectangle>
+            <staticText>
+                <reportElement x="12" y="10" width="306" height="14" forecolor="#282828"/>
+                <textElement><font fontName="SansSerif" size="9" isBold="true"/></textElement>
+                <text><![CDATA[Producto]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="331" y="10" width="58" height="14" forecolor="#282828"/>
+                <textElement textAlignment="Center"><font fontName="SansSerif" size="9" isBold="true"/></textElement>
+                <text><![CDATA[Cant.]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="391" y="10" width="83" height="14" forecolor="#282828"/>
+                <textElement textAlignment="Right"><font fontName="SansSerif" size="9" isBold="true"/></textElement>
+                <text><![CDATA[Precio]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="486" y="10" width="57" height="14" forecolor="#282828"/>
+                <textElement textAlignment="Right"><font fontName="SansSerif" size="9" isBold="true"/></textElement>
+                <text><![CDATA[Subtotal]]></text>
+            </staticText>
+        </band>
+    </columnHeader>
+
+    <detail>
+        <band height="30" splitType="Stretch">
+            <rectangle>
+                <reportElement x="0" y="0" width="555" height="30"
+                               forecolor="#D2D6DC" backcolor="#FFFFFF" mode="Opaque"/>
+                <graphicElement><pen lineWidth="0.5"/></graphicElement>
+            </rectangle>
+            <rectangle>
+                <reportElement x="330" y="0" width="1" height="30"
+                               forecolor="#D2D6DC" backcolor="#D2D6DC" mode="Opaque"/>
+                <graphicElement><pen lineWidth="0.0"/></graphicElement>
+            </rectangle>
+            <rectangle>
+                <reportElement x="390" y="0" width="1" height="30"
+                               forecolor="#D2D6DC" backcolor="#D2D6DC" mode="Opaque"/>
+                <graphicElement><pen lineWidth="0.0"/></graphicElement>
+            </rectangle>
+            <rectangle>
+                <reportElement x="485" y="0" width="1" height="30"
+                               forecolor="#D2D6DC" backcolor="#D2D6DC" mode="Opaque"/>
+                <graphicElement><pen lineWidth="0.0"/></graphicElement>
+            </rectangle>
+            <textField isStretchWithOverflow="false">
+                <reportElement x="12" y="8" width="306" height="14" forecolor="#282828"/>
+                <textElement><font fontName="SansSerif" size="9"/></textElement>
+                <textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="331" y="8" width="58" height="14" forecolor="#282828"/>
+                <textElement textAlignment="Center"><font fontName="SansSerif" size="9"/></textElement>
+                <textFieldExpression><![CDATA[String.valueOf($F{quantity})]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="391" y="8" width="83" height="14" forecolor="#282828"/>
+                <textElement textAlignment="Right"><font fontName="SansSerif" size="9"/></textElement>
+                <textFieldExpression><![CDATA[$F{priceFormatted}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="486" y="8" width="57" height="14" forecolor="#282828"/>
+                <textElement textAlignment="Right"><font fontName="SansSerif" size="9" isBold="true"/></textElement>
+                <textFieldExpression><![CDATA[$F{subtotalFormatted}]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+
+    <summary>
+        <band height="100" splitType="Stretch">
+            <rectangle>
+                <reportElement x="305" y="14" width="250" height="76"
+                               forecolor="#D2D6DC" backcolor="#FAFAFC" mode="Opaque"/>
+                <graphicElement><pen lineWidth="0.5"/></graphicElement>
+            </rectangle>
+            <rectangle>
+                <reportElement x="305" y="52" width="250" height="1"
+                               forecolor="#D2D6DC" backcolor="#D2D6DC" mode="Opaque"/>
+                <graphicElement><pen lineWidth="0.0"/></graphicElement>
+            </rectangle>
+            <staticText>
+                <reportElement x="321" y="22" width="80" height="18" forecolor="#6C7586"/>
+                <textElement verticalAlignment="Middle">
+                    <font fontName="SansSerif" size="10"/>
+                </textElement>
+                <text><![CDATA[Subtotal]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="401" y="22" width="140" height="18" forecolor="#282828"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font fontName="SansSerif" size="10"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{total}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="321" y="62" width="80" height="18" forecolor="#282828"/>
+                <textElement verticalAlignment="Middle">
+                    <font fontName="SansSerif" size="11" isBold="true"/>
+                </textElement>
+                <text><![CDATA[TOTAL]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="401" y="62" width="140" height="18" forecolor="#282828"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font fontName="SansSerif" size="11" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{total}]]></textFieldExpression>
+            </textField>
+        </band>
+    </summary>
+
+</jasperReport>

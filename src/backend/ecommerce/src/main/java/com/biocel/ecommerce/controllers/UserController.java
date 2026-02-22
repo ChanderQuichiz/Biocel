@@ -14,6 +14,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
+import java.util.Map;
 
 
 
@@ -34,6 +38,7 @@ public class UserController {
             return ResponseEntity.status(500).build();
         }
     }
+    
     @GetMapping("/findbyid/{id}")
     public ResponseEntity<Object> findById(@PathVariable int id) {
         Object user = userService.findById(id);
@@ -43,6 +48,7 @@ public class UserController {
             return ResponseEntity.notFound().build();
         }
     }
+    
     @PostMapping("/access")
     public ResponseEntity<User> access(@RequestBody User access) {
         User user = userService.findByEmailAndPassword(access.getEmail(), access.getPassword());
@@ -51,5 +57,16 @@ public class UserController {
         } else {
             return ResponseEntity.status(401).build();
         }
-    }    
+    }
+    
+    @GetMapping("/search")
+    public ResponseEntity<Map<String, Object>> search(@RequestParam(required = false) String email) {
+        List<User> users;
+        if(email != null && !email.isEmpty()) {
+            users = userService.searchByEmail(email);
+        } else {
+            users = userService.findAll();
+        }
+        return ResponseEntity.ok(Map.of("content", users));
+    }
 }

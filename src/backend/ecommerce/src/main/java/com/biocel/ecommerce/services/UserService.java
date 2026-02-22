@@ -6,10 +6,13 @@ import org.springframework.stereotype.Service;
 import com.biocel.ecommerce.entities.User;
 import com.biocel.ecommerce.repositories.UserRepository;
 
+import java.util.List;
+
 @Service
 public class UserService {
     @Autowired
     private UserRepository userRepository;
+    
     public User save(User entity) {
         return userRepository.save(entity);
     }
@@ -22,4 +25,11 @@ public class UserService {
         return userRepository.findByEmailAndPassword(email, password);
     }
     
+    public List<User> findAll() {
+        return userRepository.findAll();
+    }
+    
+    public List<User> searchByEmail(String email) {
+        return userRepository.findByEmailContainingIgnoreCase(email);
+    }
 }

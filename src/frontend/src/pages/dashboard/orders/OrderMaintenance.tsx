@@ -55,7 +55,7 @@ export function OrderMaintenance() {
   return (
     <>
     <div className="text-2xl font-bold font-serif text-neutral-600">Orders</div>
-    <div className="max-w-[300px]">
+    <div className="max-w-md">
         <Input placeholder="Filter by order number..." className="" 
         onChange={(event)=>{
             if(event.target.value.trim()!==''){

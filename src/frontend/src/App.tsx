@@ -11,7 +11,8 @@ import { SignUp } from "./pages/ecommerce/signup/SignUp";
 import { Routes, Route } from "react-router-dom";
 import Search from "./pages/ecommerce/search/Search";
 import { Orders } from "./pages/ecommerce/orders/Orders";
-import { OrderMaintenance  } from "./pages/dashboard/orders/OrderMaintenance";
+import { OrderMaintenance } from "./pages/dashboard/orders/OrderMaintenance";
+import { Users } from "./pages/dashboard/users/Users";
 export default function App() {
   return (
   <Routes>
@@ -31,9 +32,9 @@ export default function App() {
         <Route path="orders" element={<OrderMaintenance/>}/>
         <Route path="account" element={<UserInfo/>}/>
         <Route path="products" element={<Products/>}/>
+        <Route path="users" element={<Users/>}/>
         <Route index element={<Reports/>}/>
         <Route path="reports" element={<Reports/>}/>
-        
     </Route>
   </Routes>
   );
