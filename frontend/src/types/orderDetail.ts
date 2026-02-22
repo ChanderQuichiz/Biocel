@@ -5,4 +5,10 @@ export interface OrderDetail {
   quantity?: number;
   price?: number;
   subtotal?: number;
+
+  product?: {
+    productId?: number;
+    name?: string;
+    imageUrl?: string;
+  };
 }
