@@ -1,30 +1,20 @@
-import * as React from "react"
-import {
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
-  type ColumnDef,
-  type ColumnFiltersState,
-  type SortingState,
-  type VisibilityState,
-} from "@tanstack/react-table"
-import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react"
-
 import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 import {
   Field,
   FieldDescription,
@@ -34,6 +24,7 @@ import {
   FieldSet,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
 import {
   Select,
   SelectContent,
@@ -41,17 +32,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { MoreHorizontal } from "lucide-react"
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import { Textarea } from "@/components/ui/textarea"
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { useEffect, useState } from "react"
 import { deleteProductById, getProductsByPage, saveProduct } from "@/services/ProductService"
 import type { Product } from "@/types/product"
+
 
 export function Products() {
   const brands = [
@@ -99,11 +92,11 @@ export function Products() {
     "Gaming",
   ]
 
-  const [productEdit, setProductEdit] = React.useState<Product | null>(null)
-  const [activeDialog, setActiveDialog] = React.useState<boolean>(false)
-  const [data, setData] = React.useState<Product[]>([])
-  const [page, setPage] = React.useState<number>(1)
-  const [formProduct, setFormProduct] = React.useState<Product>({
+  const [products, setProducts] = useState<Product[]>([])
+  const [search, setSearch] = useState<string>('')
+  const [activeDialog, setActiveDialog] = useState<boolean>(false)
+  const [productEdit, setProductEdit] = useState<Product | null>(null)
+  const [formProduct, setFormProduct] = useState<Product>({
     productId: undefined,
     name: "",
     brand: "",
@@ -115,436 +108,276 @@ export function Products() {
     updatedAt: new Date().toISOString(),
   })
 
-  const [sorting, setSorting] = React.useState<SortingState>([])
-  const [columnFilters, setColumnFilters] =
-    React.useState<ColumnFiltersState>([])
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({})
-  const [rowSelection, setRowSelection] = React.useState({})
-
-  const columns: ColumnDef<Product>[] = [
-    {
-      id: "select",
-      header: ({ table }) => (
-        <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && "indeterminate")
-          }
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-        />
-      ),
-      enableSorting: false,
-      enableHiding: false,
-    },
-    {
-      accessorKey: "name",
-      header: ({ column }) => (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Name
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      ),
-    },
-    {
-      accessorKey: "category",
-      header: "Category",
-    },
-    {
-      accessorKey: "brand",
-      header: "Brand",
-    },
-    {
-      accessorKey: "price",
-      header: () => <div className="text-right">Price</div>,
-      cell: ({ row }) => {
-        const price = row.getValue<number>("price")
-        return <div className="text-right font-medium">${price.toFixed(2)}</div>
-      },
-    },
-    {
-      accessorKey: "stock",
-      header: () => <div className="text-right">Stock</div>,
-      cell: ({ row }) => (
-        <div className="text-right">{row.getValue("stock")}</div>
-      ),
-    },
-    {
-      id: "actions",
-      enableHiding: false,
-      cell: ({ row }) => {
-        const product = row.original
-
-        return (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <MoreHorizontal />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem
-                onClick={() =>
-                  navigator.clipboard.writeText(product.productId!.toString())
-                }
-              >
-                Copy ID
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onClick={() => {
-                  setActiveDialog(true)
-                  setProductEdit(product)
-                }}
-              >
-                Edit
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                className="text-red-600 "
-                onClick={() => {
-                  deleteProduct(product.productId as number)
-                }}
-              >
-                Delete
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        )
-      },
-    },
-  ]
-
-  async function fetchProducts() {
-    const products = await getProductsByPage(page)
-    setData(products)
+  async function loadProducts() {
+    const response = await getProductsByPage(1)
+    setProducts(response)
   }
 
   async function deleteProduct(id: number) {
     await deleteProductById(id)
-    await fetchProducts()
+    await loadProducts()
   }
 
-  function writerFormProduct(
-    event: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
-  ) {
+  function handleFormChange(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
     setFormProduct({
       ...formProduct,
       [event.target.id]: event.target.value,
     })
   }
 
-  async function sendForm() {
+  async function submitForm() {
     if (formProduct.name === "" || formProduct.price! <= 0 || formProduct.stock! < 0) {
       alert("Please fill in all required fields.")
       return
     }
-
     await saveProduct(formProduct)
-    setData(await getProductsByPage(1))
+    setActiveDialog(false)
+    setProductEdit(null)
+    setFormProduct({
+      productId: undefined,
+      name: "",
+      brand: "",
+      category: "",
+      description: "",
+      imageUrl: "",
+      price: 0,
+      stock: 0,
+      updatedAt: new Date().toISOString(),
+    })
+    await loadProducts()
   }
 
-  React.useEffect(() => {
-    fetchProducts()
-  }, [page])
+  function openNewProduct() {
+    setProductEdit(null)
+    setFormProduct({
+      productId: undefined,
+      name: "",
+      brand: "",
+      category: "",
+      description: "",
+      imageUrl: "",
+      price: 0,
+      stock: 0,
+      updatedAt: new Date().toISOString(),
+    })
+    setActiveDialog(true)
+  }
 
-  React.useEffect(() => {
-    if (productEdit) {
-      setFormProduct({
-        ...productEdit,
-        updatedAt: new Date().toISOString(),
-      })
-    }
-  }, [productEdit])
+  function openEditProduct(product: Product) {
+    setProductEdit(product)
+    setFormProduct(product)
+    setActiveDialog(true)
+  }
 
-  const table = useReactTable({
-    data,
-    columns,
-    state: {
-      sorting,
-      columnFilters,
-      columnVisibility,
-      rowSelection,
-    },
-    onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
-    onColumnVisibilityChange: setColumnVisibility,
-    onRowSelectionChange: setRowSelection,
-    getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-  })
+  useEffect(() => {
+    loadProducts()
+  }, [])
 
   return (
-    <div className="w-full ">
-      <div className="font-serif text-2xl font-bold text-neutral-600 mt-4">Maintenance products</div>
-      <div className="flex flex-col sm:flex-row  sm:items-center py-4">
-        <Input
-          placeholder="Filter by name..."
-          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-          onChange={(e) =>
-            table.getColumn("name")?.setFilterValue(e.target.value)
-          }
-          className="max-w-sm"
-        />
-        <Dialog
-          open={activeDialog}
-          onOpenChange={(open) => {
-            setActiveDialog(open)
-            if (!open) {
-              setProductEdit(null)
-              setFormProduct({
-                productId: undefined,
-                name: "",
-                brand: "",
-                category: "",
-                description: "",
-                imageUrl: "",
-                price: 0,
-                stock: 0,
-                updatedAt: new Date().toISOString(),
-              })
-            }
-          }}
-        >
+    <>
+      <div className="text-2xl font-bold font-serif text-neutral-600">Products</div>
+      <div className="flex items-center gap-4">
+        <div className="max-w-[300px]">
+          <Input
+            placeholder="Filter by name..."
+            onChange={(event) => {
+              setSearch(event.target.value)
+            }}
+          />
+        </div>
+
+        <Dialog open={activeDialog} onOpenChange={setActiveDialog}>
           <DialogTrigger asChild>
-            <button className="rounded-[5px] m-10 max-w-[90vw] p-2 bg-purple-600 text-white cursor-pointer ">
+            <Button onClick={openNewProduct} className="bg-purple-600 hover:bg-purple-700 text-white">
               New Product
-            </button>
+            </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[750px]">
-            <FieldGroup>
-              <FieldSet>
-                <FieldLegend>Register new Product</FieldLegend>
-                <FieldDescription>
-                  All transactions are secure and encrypted
-                </FieldDescription>
-                <FieldGroup>
+        <DialogContent className="sm:max-w-[750px]">
+          <DialogHeader>
+            <DialogTitle>{productEdit ? "Edit Product" : "New Product"}</DialogTitle>
+            <DialogDescription>
+              Fill in the product details below
+            </DialogDescription>
+          </DialogHeader>
+          <FieldGroup>
+            <FieldSet>
+              <FieldGroup>
+                <div className="grid grid-cols-3 gap-4">
                   <Field>
+                    <FieldLabel htmlFor="name">Product Name</FieldLabel>
                     <Input
-                      type="hidden"
-                      id="productId"
-                      onChange={writerFormProduct}
-                      value={formProduct.productId}
+                      id="name"
+                      placeholder="Ipad Pro"
+                      required
+                      onChange={handleFormChange}
+                      value={formProduct.name}
                     />
                   </Field>
-                  <div className="grid grid-cols-3 gap-4">
-                    <Field>
-                      <FieldLabel htmlFor="name">Product Name</FieldLabel>
-                      <Input
-                        id="name"
-                        placeholder="Ipad Pro"
-                        required
-                        onChange={writerFormProduct}
-                        value={formProduct.name}
-                      />
-                    </Field>
-                    <Field>
-                      <FieldLabel htmlFor="brand">Brand</FieldLabel>
-                      <Select
-                        value={formProduct.brand}
-                        onValueChange={(value) =>
-                          setFormProduct({ ...formProduct, brand: value })
-                        }
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Apple" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {brands.map((brand) => (
-                            <SelectItem key={brand} value={brand}>
-                              {brand}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </Field>
-
-                    <Field>
-                      <FieldLabel htmlFor="category">Category</FieldLabel>
-                      <Select
-                        value={formProduct.category}
-                        onValueChange={(value) =>
-                          setFormProduct({ ...formProduct, category: value })
-                        }
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="tablets" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {categories.map((category) => (
-                            <SelectItem key={category} value={category}>
-                              {category}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </Field>
-                  </div>
-                  <div className="grid grid-cols-3 gap-4">
-                    <Field>
-                      <FieldLabel htmlFor="price">Price</FieldLabel>
-                      <Input
-                        type="number"
-                        id="price"
-                        placeholder="0.00"
-                        required
-                        onChange={writerFormProduct}
-                        value={formProduct.price}
-                      />
-                    </Field>
-                    <Field>
-                      <FieldLabel htmlFor="stock">Stock</FieldLabel>
-                      <Input
-                        type="number"
-                        id="stock"
-                        placeholder="0.00"
-                        required
-                        onChange={writerFormProduct}
-                        value={formProduct.stock}
-                      />
-                    </Field>
-                    <Field>
-                      <div className="grid w-full max-w-sm items-center gap-3">
-                        <FieldLabel htmlFor="imageUrl">Picture</FieldLabel>
-                        <Input
-                          id="imageUrl"
-                          placeholder="https://example.com/image.jpg"
-                          required
-                          onChange={writerFormProduct}
-                          value={formProduct.imageUrl}
-                        />
-                      </div>
-                    </Field>
-                  </div>
-
                   <Field>
-                    <div className="grid w-full gap-3">
-                      <FieldLabel htmlFor="description">Description</FieldLabel>
-                      <Textarea
-                        placeholder="Type your message here."
-                        id="description"
-                        value={formProduct.description}
-                        onChange={writerFormProduct}
-                      />
-                    </div>
+                    <FieldLabel htmlFor="brand">Brand</FieldLabel>
+                    <Select
+                      value={formProduct.brand}
+                      onValueChange={(value) =>
+                        setFormProduct({ ...formProduct, brand: value })
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select brand" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {brands.map((brand) => (
+                          <SelectItem key={brand} value={brand}>
+                            {brand}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </Field>
-                </FieldGroup>
-              </FieldSet>
-
-              <Field orientation="horizontal">
-                <Button type="button" onClick={sendForm}>
-                  Submit
-                </Button>
-                <Button variant="outline" type="button">
-                  Cancel
-                </Button>
-              </Field>
-            </FieldGroup>
-          </DialogContent>
-        </Dialog>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Columns <ChevronDown className="ml-2 h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => (
-                <DropdownMenuCheckboxItem
-                  key={column.id}
-                  checked={column.getIsVisible()}
-                  onCheckedChange={(value) => column.toggleVisibility(!!value)}
-                >
-                  {column.id}
-                </DropdownMenuCheckboxItem>
-              ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
+                  <Field>
+                    <FieldLabel htmlFor="category">Category</FieldLabel>
+                    <Select
+                      value={formProduct.category}
+                      onValueChange={(value) =>
+                        setFormProduct({ ...formProduct, category: value })
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select category" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {categories.map((category) => (
+                          <SelectItem key={category} value={category}>
+                            {category}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </Field>
+                </div>
+                <div className="grid grid-cols-3 gap-4">
+                  <Field>
+                    <FieldLabel htmlFor="price">Price</FieldLabel>
+                    <Input
+                      type="number"
+                      id="price"
+                      placeholder="0.00"
+                      required
+                      onChange={handleFormChange}
+                      value={formProduct.price}
+                    />
+                  </Field>
+                  <Field>
+                    <FieldLabel htmlFor="stock">Stock</FieldLabel>
+                    <Input
+                      type="number"
+                      id="stock"
+                      placeholder="0.00"
+                      required
+                      onChange={handleFormChange}
+                      value={formProduct.stock}
+                    />
+                  </Field>
+                  <Field>
+                    <FieldLabel htmlFor="imageUrl">Image URL</FieldLabel>
+                    <Input
+                      id="imageUrl"
+                      placeholder="https://example.com/image.jpg"
+                      required
+                      onChange={handleFormChange}
+                      value={formProduct.imageUrl}
+                    />
+                  </Field>
+                </div>
+                <Field>
+                  <FieldLabel htmlFor="description">Description</FieldLabel>
+                  <Textarea
+                    placeholder="Product description"
+                    id="description"
+                    value={formProduct.description}
+                    onChange={handleFormChange}
+                  />
+                </Field>
+              </FieldGroup>
+            </FieldSet>
+            <div className="flex gap-2">
+              <Button type="button" onClick={submitForm}>
+                Submit
+              </Button>
+              <Button
+                variant="outline"
+                type="button"
+                onClick={() => setActiveDialog(false)}
+              >
+                Cancel
+              </Button>
+            </div>
+          </FieldGroup>
+        </DialogContent>
+      </Dialog>
       </div>
 
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
-                    {flexRender(
-                      header.column.columnDef.header,
-                      header.getContext()
-                    )}
-                  </TableHead>
-                ))}
-              </TableRow>
-            ))}
-          </TableHeader>
-
-          <TableBody>
-            {table.getRowModel().rows.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id}>
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={columns.length} className="text-center">
-                  not found results.
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Name</TableHead>
+            <TableHead>Brand</TableHead>
+            <TableHead>Category</TableHead>
+            <TableHead>Price</TableHead>
+            <TableHead>Stock</TableHead>
+            <TableHead className="text-start">Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {products
+            ?.filter((product) =>
+              product.name?.toLowerCase().includes(search.toLowerCase())
+            )
+            .map((product) => (
+              <TableRow key={product.productId}>
+                <TableCell>{product.name}</TableCell>
+                <TableCell>{product.brand}</TableCell>
+                <TableCell>{product.category}</TableCell>
+                <TableCell>${product.price?.toFixed(2)}</TableCell>
+                <TableCell>{product.stock}</TableCell>
+                <TableCell>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" className="h-8 w-8 p-0">
+                        <MoreHorizontal className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                      <DropdownMenuItem
+                        onClick={() =>
+                          navigator.clipboard.writeText(product.productId!.toString())
+                        }
+                      >
+                        Copy ID
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        onClick={() => {
+                          openEditProduct(product)
+                        }}
+                      >
+                        Edit
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        className="text-red-600"
+                        onClick={() => {
+                          deleteProduct(product.productId as number)
+                        }}
+                      >
+                        Delete
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </TableCell>
               </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
-        </div>
-
-        <div className="space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            Previous
-          </Button>
-
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            Next
-          </Button>
-        </div>
-      </div>
-    </div>
+            ))}
+        </TableBody>
+      </Table>
+    </>
   )
 }
