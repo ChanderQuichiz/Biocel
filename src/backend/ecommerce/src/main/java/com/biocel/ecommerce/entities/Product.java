@@ -28,7 +28,7 @@ public class Product {
     @Column(name = "category", length = 50)
     private String category;
 
-    @Column(name = "description", columnDefinition = "TEXT")
+    @Column(name = "description")
     private String description;
 
     @Column(name = "image_url", length = 255)
